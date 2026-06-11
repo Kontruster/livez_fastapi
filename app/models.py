@@ -1,12 +1,20 @@
 from sqlalchemy import Column, Integer, String, Text, ForeignKey, DateTime, func
 from sqlalchemy.orm import relationship
+from fastapi_users.db import SQLAlchemyBaseUserTable
 from app.database import Base
 
-# Заглушка User
-class User(Base):
+
+class User(SQLAlchemyBaseUserTable[int], Base):
     __tablename__ = "users"
+    
+    # Базовый класс уже добавляет:
+    # id: int (PK), email: str (unique), hashed_password: str,
+    # is_active: bool, is_superuser: bool, is_verified: bool
     id = Column(Integer, primary_key=True, index=True)
-    username = Column(String, unique=True, index=True)
+    username = Column(String(50), unique=True, index=True, nullable=False, default='first')
+    
+    posts = relationship("Post", back_populates="author", cascade="all, delete-orphan")
+    comments = relationship("Comment", back_populates="author")
 
 class Group(Base):
     __tablename__ = "groups"
@@ -21,11 +29,12 @@ class Post(Base):
     id = Column(Integer, primary_key=True, index=True)
     text = Column(Text, nullable=False)
     pub_date = Column(DateTime, server_default=func.now())
-    author_id = Column(Integer, ForeignKey("users.id"))
-    group_id = Column(Integer, ForeignKey("groups.id"), nullable=True)
+    author_id = Column(Integer, ForeignKey("users.id"), index=True)
+    group_id = Column(Integer, ForeignKey("groups.id"), nullable=True, index=True)
     image = Column(String, nullable=True)  # Хранит путь к файлу
     
-    author = relationship("User", foreign_keys=[author_id])
+    # author = relationship("User", foreign_keys=[author_id])
+    author = relationship("User", back_populates="posts")
     group = relationship("Group", back_populates="posts")
     comments = relationship("Comment", back_populates="post", cascade="all, delete-orphan")
 
@@ -34,11 +43,11 @@ class Comment(Base):
     id = Column(Integer, primary_key=True, index=True)
     text = Column(String(300), nullable=False)
     pub_date = Column(DateTime, server_default=func.now())
-    post_id = Column(Integer, ForeignKey("posts.id"), nullable=False)
-    author_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    post_id = Column(Integer, ForeignKey("posts.id"), nullable=False, index=True)
+    author_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
     
     post = relationship("Post", back_populates="comments")
-    author = relationship("User", foreign_keys=[author_id])
+    author = relationship("User", back_populates="comments")
 
 class Follow(Base):
     __tablename__ = "follows"

@@ -3,16 +3,16 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from app.database import get_db
 from app.models import Post
-from app.schemas import PostCreate, PostRead
+# from app.schemas import PostCreate, PostRead
 from app.dependencies import get_current_user
 
-router = APIRouter(prefix="/posts", tags=["posts"])
+router = APIRouter(prefix="/posts/", tags=["posts"])
 
 @router.get("/", response_model=list[PostRead])
-async def list_posts(skip: int = 0, limit: int = 100, db: AsyncSession = Depends(get_db)):
+async def list_posts(db: AsyncSession = Depends(get_db)):
     result = await db.execute(
         select(Post).order_by(Post.pub_date.desc()).offset(skip).limit(limit)
-    )
+    )   
     return result.scalars().all()
 
 @router.post("/", response_model=PostRead, status_code=status.HTTP_201_CREATED)
@@ -21,6 +21,8 @@ async def create_post(
     db: AsyncSession = Depends(get_db),
     current_user: dict = Depends(get_current_user)
 ):
+    # service = PostService(db)
+    # service.create_post(post_data)
     db_post = Post(**post_data.model_dump(), author_id=current_user["id"])
     db.add(db_post)
     await db.commit()
