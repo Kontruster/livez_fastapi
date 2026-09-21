@@ -1,6 +1,7 @@
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.models import Group
+from fastapi_pagination.ext.sqlalchemy import paginate
 
 class GroupRepository:
     def __init__(self, session: AsyncSession):

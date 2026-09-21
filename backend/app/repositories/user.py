@@ -1,6 +1,8 @@
-from sqlalchemy import select, func
+from sqlalchemy import select, func, desc, delete
+from sqlalchemy.orm import joinedload
 from sqlalchemy.ext.asyncio import AsyncSession
-from fastapi_pagination import paginate
+from fastapi_pagination import Params
+from fastapi_pagination.ext.sqlalchemy import paginate
 from app.models import User, Post, Follow
 
 class UserRepository:
@@ -12,8 +14,13 @@ class UserRepository:
         return await self.session.scalar(stmt)
 
     async def get_posts_by_author(self, author_id: int) -> paginate.Page:
-        stmt = select(Post).where(Post.author_id == author_id).order_by(Post.pub_date.desc())
-        return await paginate(self.session, stmt)
+        stmt = (
+            select(Post)
+            .where(Post.author_id == author_id)
+            .options(joinedload(Post.author))
+            .order_by(desc(Post.pub_date))
+        )
+        return await paginate(self.session, stmt, params=Params(page=1, size=50))
 
     async def count_posts_by_author(self, author_id: int) -> int:
         stmt = select(func.count(Post.id)).where(Post.author_id == author_id)

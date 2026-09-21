@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from fastapi_pagination import Page
 from typing import Optional
+import logging
 
 from app.services.post import PostService
 from app.services.group import GroupService
@@ -23,11 +24,15 @@ from app.core.auth import current_active_user
 router = APIRouter(tags=["posts"])
 
 
+logger = logging.getLogger(__name__)
+
 def handle_domain_exception(exc: Exception):
     if isinstance(exc, PostNotFoundError):
         raise HTTPException(status_code=404, detail=str(exc))
     if isinstance(exc, PermissionDeniedError):
         raise HTTPException(status_code=403, detail=str(exc))
+    # всё, что не распознали, — логируем целиком и отдаём 500
+    logger.exception("Unhandled error in router: %s", exc)
     raise HTTPException(status_code=500, detail="Внутренняя ошибка сервера")
 
 @router.get("/posts/", response_model=Page[PostList])
@@ -36,7 +41,7 @@ async def index(
     service: PostService = Depends(get_post_service),
 ):
    try:
-       return service.get_feed(q)
+       return await service.get_feed(q)
    except Exception as e:
        handle_domain_exception(e)
 

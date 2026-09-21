@@ -59,12 +59,13 @@ class UserShort(BaseModel):
 
 class PostList(BaseModel):
     id: int
+    title: Optional[str] = None
     text: str
     pub_date: datetime
     image: Optional[str] = None
     author: UserRead
     author_id: int
-    group_id: Optional[int]
+    group_id: Optional[int] = None
     model_config = ConfigDict(from_attributes=True)
 
 class PostDetail(BaseModel):
