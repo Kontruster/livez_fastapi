@@ -2,13 +2,14 @@ from sqlalchemy import select, desc, func, delete
 from sqlalchemy.orm import joinedload, selectinload
 from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi_pagination.ext.sqlalchemy import paginate
+from fastapi_pagination import Page
 from app.models import Post, User, Comment, Group
 
 class PostRepository:
     def __init__(self, session: AsyncSession):
         self.session = session
 
-    async def get_feed(self, q: str | None) -> paginate.Page:
+    async def get_feed(self, q: str | None) -> Page:
         stmt = (
             select(Post)
             .options(joinedload(Post.author))
@@ -18,7 +19,7 @@ class PostRepository:
             stmt = stmt.where(Post.text.ilike(f"%{q}%"))
         return await paginate(self.session, stmt)
 
-    async def get_follow_feed(self, user_id: int) -> paginate.Page:
+    async def get_follow_feed(self, user_id: int) -> Page:
         from app.models import Follow
         stmt = (
             select(Post)
@@ -29,7 +30,7 @@ class PostRepository:
         )
         return await paginate(self.session, stmt)
 
-    async def get_group_posts(self, group_id: int) -> paginate.Page:
+    async def get_group_posts(self, group_id: int) -> Page:
         stmt = (
             select(Post)
             .where(Post.group_id == group_id)

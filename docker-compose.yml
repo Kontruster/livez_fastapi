@@ -1,0 +1,32 @@
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: fastapi_backend
+    ports:
+      - "8000:8000"
+    volumes:
+      # ВАЖНО: Сохранение базы данных SQLite
+      # Папка data на вашем компьютере синхронизируется с папкой внутри контейнера
+      - ./backend/data:/app/data
+    env_file:
+      - ./backend/app/.env
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: react_frontend
+    ports:
+      - "5173:5173"
+    volumes:
+      # Монтируем код для горячей перезагрузки (Hot Reload) при разработке
+      - ./frontend:/app
+      # Защищаем node_modules внутри контейнера от перезаписи папкой с хоста
+      - /app/node_modules
+    depends_on:
+      - backend
+    restart: unless-stopped

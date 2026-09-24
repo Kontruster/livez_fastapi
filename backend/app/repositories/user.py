@@ -3,6 +3,7 @@ from sqlalchemy.orm import joinedload
 from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi_pagination import Params
 from fastapi_pagination.ext.sqlalchemy import paginate
+from fastapi_pagination import Page
 from app.models import User, Post, Follow
 
 class UserRepository:
@@ -13,7 +14,7 @@ class UserRepository:
         stmt = select(User).where(User.username == username)
         return await self.session.scalar(stmt)
 
-    async def get_posts_by_author(self, author_id: int) -> paginate.Page:
+    async def get_posts_by_author(self, author_id: int) -> Page:
         stmt = (
             select(Post)
             .where(Post.author_id == author_id)
