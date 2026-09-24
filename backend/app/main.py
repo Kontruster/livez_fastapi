@@ -13,7 +13,7 @@ app = FastAPI(title="livej_fastAPI", lifespan=lifespan)
 # Добавляем CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],   # адрес фронта
+    allow_origins=["http://localhost:5173"],
     allow_credentials=True, # ОБЯЗАТЕЛЬНО для CookieTransport
     allow_methods=["*"],
     allow_headers=["*"],

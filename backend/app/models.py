@@ -6,10 +6,6 @@ from app.database import Base
 
 class User(SQLAlchemyBaseUserTable[int], Base):
     __tablename__ = "users"
-    
-    # Базовый класс уже добавляет:
-    # id: int (PK), email: str (unique), hashed_password: str,
-    # is_active: bool, is_superuser: bool, is_verified: bool
     id = Column(Integer, primary_key=True, index=True)
     username = Column(String(50), unique=True, index=True, nullable=False, default='first')
     
@@ -32,8 +28,6 @@ class Post(Base):
     author_id = Column(Integer, ForeignKey("users.id"), index=True)
     group_id = Column(Integer, ForeignKey("groups.id"), nullable=True, index=True)
     image = Column(String, nullable=True)  # Хранит путь к файлу
-    
-    # author = relationship("User", foreign_keys=[author_id])
     author = relationship("User", back_populates="posts")
     group = relationship("Group", back_populates="posts")
     comments = relationship("Comment", back_populates="post", cascade="all, delete-orphan")

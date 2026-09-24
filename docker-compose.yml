@@ -7,14 +7,33 @@ services:
     container_name: fastapi_backend
     ports:
       - "8000:8000"
-    volumes:
-      # ВАЖНО: Сохранение базы данных SQLite
-      # Папка data на вашем компьютере синхронизируется с папкой внутри контейнера
-      - ./backend/data:/app/data
+    environment:
+      DATABASE_URL: postgresql+asyncpg://postgres:postgres@db:5432/your_db
     env_file:
-      - ./backend/app/.env
+      - ./backend/.env
+    depends_on:
+      db:
+        condition: service_healthy
     restart: unless-stopped
 
+  db:
+    image: postgres:16
+    container_name: postgres_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: your_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d your_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      
   frontend:
     build:
       context: ./frontend
@@ -23,10 +42,13 @@ services:
     ports:
       - "5173:5173"
     volumes:
-      # Монтируем код для горячей перезагрузки (Hot Reload) при разработке
+      # для горячей перезагрузки (Hot Reload) при разработке
       - ./frontend:/app
       # Защищаем node_modules внутри контейнера от перезаписи папкой с хоста
       - /app/node_modules
     depends_on:
       - backend
     restart: unless-stopped
+
+volumes:
+  postgres_data:

@@ -10,10 +10,8 @@ class PostService:
         self.group_repo = group_repo
 
     async def get_feed(self, q: str | None) -> list[PostList]:
-        # paginate возвращает объект Page, который мы можем вернуть как есть, 
-        # или преобразовать элементы в Pydantic
         page = await self.post_repo.get_feed(q)
-        return page # FastAPI сам валидирует это через response_model=Page[PostList]
+        return page
 
     async def get_follow_feed(self, current_user: User) -> list[PostList]:
         return await self.post_repo.get_follow_feed(current_user.id)

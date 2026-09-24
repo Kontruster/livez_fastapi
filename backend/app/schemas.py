@@ -13,7 +13,6 @@ from fastapi_users import schemas
 class UserRead(schemas.BaseUser[int]):
     username: str
     
-    # Разрешаем Pydantic читать данные из ORM-объектов (SQLAlchemy)
     model_config = ConfigDict(from_attributes=True)
 
 class UserCreate(schemas.BaseUserCreate):
@@ -31,7 +30,7 @@ class GroupRead(BaseModel):
 class PostCreate(BaseModel):
     text: str
     group_id: Optional[int] = None
-    image: Optional[str] = None  # В FastAPI файлы обрабатываются отдельно
+    image: Optional[str] = None
 
 # class PostRead(PostCreate):
 #     id: int
@@ -49,8 +48,6 @@ class CommentRead(CommentCreate):
     # author_id: int
     author: UserRead  # Вложенный автор комментария
     model_config = ConfigDict(from_attributes=True)
-
-# new
 
 class UserShort(BaseModel):
     id: int
@@ -84,7 +81,7 @@ class PostDetailResponse(BaseModel):
 
 class ProfileResponse(BaseModel):
     author: UserRead
-    posts: Page[PostList]  # Пагинированный список
+    posts: Page[PostList]
     is_following: bool
     total_posts: int
     model_config = ConfigDict(from_attributes=True)
