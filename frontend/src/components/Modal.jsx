@@ -1,14 +1,12 @@
 import { useEffect } from 'react'
 
 export default function Modal({ open, title, onClose, children, footer }) {
-  // Закрытие по Esc
   useEffect(() => {
     if (!open) return
     const onKey = (e) => {
       if (e.key === 'Escape') onClose()
     }
     document.addEventListener('keydown', onKey)
-    // Блокируем скролл body, пока модалка открыта
     const prev = document.body.style.overflow
     document.body.style.overflow = 'hidden'
     return () => {

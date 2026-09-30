@@ -1,9 +1,11 @@
-from sqlalchemy import select, desc, func, delete
-from sqlalchemy.orm import joinedload, selectinload
-from sqlalchemy.ext.asyncio import AsyncSession
-from fastapi_pagination.ext.sqlalchemy import paginate
 from fastapi_pagination import Page
-from app.models import Post, User, Comment, Group
+from fastapi_pagination.ext.sqlalchemy import paginate
+from sqlalchemy import delete, desc, func, select
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import joinedload, selectinload
+
+from app.models import Comment, Group, Post, User
+
 
 class PostRepository:
     def __init__(self, session: AsyncSession):
@@ -43,7 +45,6 @@ class PostRepository:
         post = Post(text=text, image=image, group_id=group_id, author_id=author_id)
         self.session.add(post)
         await self.session.commit()
-        # перезагружаем с автором одним запросом
         stmt = (
             select(Post)
             .options(joinedload(Post.author))

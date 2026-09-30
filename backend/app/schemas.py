@@ -1,9 +1,9 @@
-from pydantic import BaseModel, ConfigDict, EmailStr
 from datetime import datetime
 from typing import Optional
+
 from fastapi_pagination import Page
 from fastapi_users import schemas
-
+from pydantic import BaseModel, ConfigDict, EmailStr
 
 # class UserShort(BaseModel):
 #     id: int
@@ -46,7 +46,7 @@ class CommentRead(CommentCreate):
     id: int
     pub_date: datetime
     # author_id: int
-    author: UserRead  # Вложенный автор комментария
+    author: UserRead
     model_config = ConfigDict(from_attributes=True)
 
 class UserShort(BaseModel):

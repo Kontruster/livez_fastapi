@@ -1,8 +1,6 @@
 import { useState } from 'react'
 import { postsApi } from '../api/client'
 
-// Группы грузим один раз и передаём сверху — они редко меняются.
-// Если не хочешь возиться — просто не передавай groups, форма всё равно работает.
 export default function PostForm({ groups = [], onCreated }) {
   const [text, setText] = useState('')
   const [groupId, setGroupId] = useState('')

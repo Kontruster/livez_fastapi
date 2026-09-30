@@ -1,6 +1,7 @@
 from app.repositories.group import GroupRepository
 from app.schemas import GroupRead
 
+
 class GroupService:
     def __init__(self, group_repo: GroupRepository):
         self.group_repo = group_repo

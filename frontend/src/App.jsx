@@ -56,7 +56,6 @@ export default function App() {
               />
               <Route path="/groups" element={<GroupsPage />} />
               <Route path="/groups/:slug" element={<GroupPage />} />
-              {/* сюда будем добавлять /posts/:id, /profile/:username, /groups */}
             </Route>
 
             <Route path="*" element={<Navigate to="/" replace />} />

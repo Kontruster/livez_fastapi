@@ -27,10 +27,6 @@ export default function PostDetailPage() {
       .detail(id)
       .then((data) => {
         if (cancelled) return
-        // PostDetailResponse, судя по названию, содержит и пост, и комменты.
-        // Наиболее вероятные варианты:
-        //  - { ...post, comments: [...] }
-        //  - { post: {...}, comments: [...] }
         const payload = data.post ? data.post : data
         const cmts = data.comments ?? payload.comments ?? []
         setPost(payload)

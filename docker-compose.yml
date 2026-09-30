@@ -42,9 +42,7 @@ services:
     ports:
       - "5173:5173"
     volumes:
-      # для горячей перезагрузки (Hot Reload) при разработке
       - ./frontend:/app
-      # Защищаем node_modules внутри контейнера от перезаписи папкой с хоста
       - /app/node_modules
     depends_on:
       - backend

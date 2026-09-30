@@ -15,7 +15,6 @@ export function ToastProvider({ children }) {
     (message, type = 'info') => {
       const id = ++idSeq
       setToasts((prev) => [...prev, { id, message, type }])
-      // авто-удаление через 3 секунды
       setTimeout(() => remove(id), 3000)
     },
     [remove],

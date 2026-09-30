@@ -1,6 +1,8 @@
-from sqlalchemy import Column, Integer, String, Text, ForeignKey, DateTime, func
-from sqlalchemy.orm import relationship
 from fastapi_users.db import SQLAlchemyBaseUserTable
+from sqlalchemy import (Column, DateTime, ForeignKey, Integer, String, Text,
+                        func)
+from sqlalchemy.orm import relationship
+
 from app.database import Base
 
 
@@ -27,7 +29,7 @@ class Post(Base):
     pub_date = Column(DateTime, server_default=func.now())
     author_id = Column(Integer, ForeignKey("users.id"), index=True)
     group_id = Column(Integer, ForeignKey("groups.id"), nullable=True, index=True)
-    image = Column(String, nullable=True)  # Хранит путь к файлу
+    image = Column(String, nullable=True)
     author = relationship("User", back_populates="posts")
     group = relationship("Group", back_populates="posts")
     comments = relationship("Comment", back_populates="post", cascade="all, delete-orphan")

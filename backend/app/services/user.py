@@ -1,7 +1,8 @@
+from app.exceptions import CannotFollowSelfError, UserNotFoundError
+from app.models import User
 from app.repositories.user import UserRepository
 from app.schemas import ProfileResponse
-from app.exceptions import UserNotFoundError, CannotFollowSelfError
-from app.models import User
+
 
 class UserService:
     def __init__(self, user_repo: UserRepository):
@@ -19,7 +20,6 @@ class UserService:
         if current_user and current_user.id != author.id:
             is_following = await self.user_repo.is_following(current_user.id, author.id)
 
-        # Возвращаем словарь, который Pydantic (ProfileResponse) сможет валидировать
         return {
             "author": author,
             "posts": posts_page,

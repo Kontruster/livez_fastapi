@@ -7,9 +7,6 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
 
-  // При старте пробуем получить текущего пользователя.
-  // Если cookie валидная — вернётся объект, если нет — 401 и мы просто
-  // остаёмся "не залогинены".
   useEffect(() => {
     authApi
       .me()
@@ -27,7 +24,6 @@ export function AuthProvider({ children }) {
   const register = async (payload) => {
     await authApi.register(payload)
     // после регистрации fastapi-users не логинит автоматически
-    // (если хочешь — сделаем авто-логин, скажи)
   }
 
   const logout = async () => {

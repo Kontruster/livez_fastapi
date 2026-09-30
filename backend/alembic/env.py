@@ -8,10 +8,8 @@ from sqlalchemy.ext.asyncio import async_engine_from_config
 from dotenv import load_dotenv
 
 from app.database import Base
-# Важно: импортируйте все модели, чтобы они попали в Base.metadata
 from app.models import User, Post, Group, Comment, Follow  # noqa: F401
 
-# Загружаем переменные окружения из .env
 load_dotenv()
 
 config = context.config
@@ -19,7 +17,6 @@ config = context.config
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
-# Подставляем URL из .env в конфиг Alembic
 DATABASE_URL = os.getenv("DATABASE_URL")
 if DATABASE_URL:
     config.set_main_option("sqlalchemy.url", DATABASE_URL)

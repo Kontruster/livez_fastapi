@@ -1,10 +1,11 @@
-from sqlalchemy import select, func, desc, delete
-from sqlalchemy.orm import joinedload
-from sqlalchemy.ext.asyncio import AsyncSession
-from fastapi_pagination import Params
+from fastapi_pagination import Page, Params
 from fastapi_pagination.ext.sqlalchemy import paginate
-from fastapi_pagination import Page
-from app.models import User, Post, Follow
+from sqlalchemy import delete, desc, func, select
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import joinedload
+
+from app.models import Follow, Post, User
+
 
 class UserRepository:
     def __init__(self, session: AsyncSession):

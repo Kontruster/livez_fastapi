@@ -1,20 +1,20 @@
+import os
 from typing import Optional
+
 from fastapi import Depends, Request
 from fastapi_users import BaseUserManager, FastAPIUsers, IntegerIDMixin
-from fastapi_users.authentication import (
-    AuthenticationBackend,
-    BearerTransport,
-    JWTStrategy,
-    CookieTransport
-)
+from fastapi_users.authentication import (AuthenticationBackend,
+                                          BearerTransport, CookieTransport,
+                                          JWTStrategy)
 from fastapi_users.db import SQLAlchemyUserDatabase
 from sqlalchemy.ext.asyncio import AsyncSession
+
+from app.config import settings
+from app.database import engine, get_db
+from app.models import User
+
 # from dotenv import load_dotenv
 
-from app.database import get_db, engine
-from app.config import settings
-from app.models import User
-import os
 
 # SECRET_KEY = os.getenv("SECRET_KEY")
 SECRET_KEY = settings.SECRET_KEY
