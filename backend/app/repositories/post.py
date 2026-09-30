@@ -1,4 +1,4 @@
-from fastapi_pagination import Page
+from fastapi_pagination import Page, Params
 from fastapi_pagination.ext.sqlalchemy import paginate
 from sqlalchemy import delete, desc, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -39,7 +39,7 @@ class PostRepository:
             .options(joinedload(Post.author))
             .order_by(desc(Post.pub_date))
         )
-        return await paginate(self.session, stmt)
+        return await paginate(self.session, stmt, params=Params(page=1, size=10))
 
     async def create(self, author_id, text, image, group_id) -> Post:
         post = Post(text=text, image=image, group_id=group_id, author_id=author_id)

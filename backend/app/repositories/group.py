@@ -17,3 +17,10 @@ class GroupRepository:
         stmt = select(Group).order_by(Group.title)
         result = await self.session.scalars(stmt)
         return result.all()
+
+    async def create(self, title: str, slug: str, description: str) -> Group:
+        group = Group(title=title, slug=slug, description=description)
+        self.session.add(group)
+        await self.session.commit()
+        await self.session.refresh(group)
+        return group

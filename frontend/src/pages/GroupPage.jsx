@@ -1,13 +1,19 @@
 import { useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { postsApi } from '../api/client'
+import { useAuth } from '../context/AuthContext'
+import { useToast } from '../context/ToastContext'
 import PostCard from '../components/PostCard'
+import PostForm from '../components/PostForm'
 
 const SIZE = 10
 
 export default function GroupPage() {
   const { slug } = useParams()
+  const { user } = useAuth()
+  const toast = useToast()
 
+  const [group, setGroup] = useState(null)
   const [items, setItems] = useState([])
   const [page, setPage] = useState(1)
   const [pages, setPages] = useState(1)
@@ -23,8 +29,9 @@ export default function GroupPage() {
       .groupFeed(slug, { page, size: SIZE })
       .then((data) => {
         if (cancelled) return
-        setItems(data.items || [])
-        setPages(data.pages || 1)
+        setGroup(data.group)
+        setItems(data.posts?.items || [])
+        setPages(data.posts?.pages || 1)
       })
       .catch((err) => !cancelled && setError(err.message || 'Группа не найдена'))
       .finally(() => !cancelled && setLoading(false))
@@ -34,13 +41,27 @@ export default function GroupPage() {
     }
   }, [slug, page])
 
+  const onCreated = (created) => {
+    if (page === 1) setItems((prev) => [created, ...prev])
+    toast.success('Пост опубликован')
+  }
+
   return (
     <div className="group-page">
       <Link to="/groups" className="profile__hint">
         ← Ко всем группам
       </Link>
 
-      <h1 className="page-title">@{slug}</h1>
+      <header className="group-page__head">
+        <h1 className="page-title">{group?.title || `@${slug}`}</h1>
+        {group?.description && (
+          <p className="group-page__desc">{group.description}</p>
+        )}
+      </header>
+
+      {user && group && (
+        <PostForm fixedGroupId={group.id} onCreated={onCreated} />
+      )}
 
       {loading && <p className="page-loading">Загружаем…</p>}
       {error && <p className="form-error">{error}</p>}

@@ -94,6 +94,9 @@ export const postsApi = {
 // ---------- Groups ----------
 export const groupsApi = {
   list: () => request('/groups/'),
+  get: (slug) => request(`/groups/${encodeURIComponent(slug)}`),
+  create: (payload) =>
+    request('/groups/', { method: 'POST', body: payload }),
 }
 
 // ---------- Profile / Follow ----------

@@ -468,3 +468,19 @@ input:focus, textarea:focus { border-color: var(--accent); }
 
 /* --- Post card actions --- */
 .post-card__actions { display: flex; gap: 8px; }
+
+/* --- Groups page header --- */
+.groups-page__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+/* --- Group page --- */
+.group-page__head { display: flex; flex-direction: column; gap: 6px; }
+.group-page__desc { color: var(--muted); margin: 0; }
+
+/* --- Form hint --- */
+.form-hint { color: var(--muted); font-size: 12px; }
+.form-hint b { color: var(--accent); }

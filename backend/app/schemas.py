@@ -3,8 +3,8 @@ from typing import Optional
 
 from fastapi_pagination import Page
 from fastapi_users import schemas
-from pydantic import BaseModel, ConfigDict, EmailStr
-
+from pydantic import BaseModel, ConfigDict, EmailStr, field_validator, Field
+import re
 # class UserShort(BaseModel):
 #     id: int
 #     username: str
@@ -26,6 +26,21 @@ class GroupRead(BaseModel):
     description: str
     model_config = ConfigDict(from_attributes=True)
 
+class GroupCreate(BaseModel):
+    title: str = Field(min_length=1, max_length=200)
+    slug: str = Field(min_length=2, max_length=64)
+    description: str = ""
+
+    @field_validator("slug")
+    @classmethod
+    def validate_slug(cls, v: str) -> str:
+        v = v.strip().lower()
+        if not re.fullmatch(r"[a-z0-9][a-z0-9-]*", v):
+            raise ValueError(
+                "slug может содержать только a-z, 0-9 и дефис, "
+                "и должен начинаться с буквы или цифры"
+            )
+        return v
 
 class PostCreate(BaseModel):
     text: str
@@ -86,3 +101,6 @@ class ProfileResponse(BaseModel):
     total_posts: int
     model_config = ConfigDict(from_attributes=True)
 
+class GroupDetailResponse(BaseModel):
+    group: GroupRead
+    posts: Page[PostList]

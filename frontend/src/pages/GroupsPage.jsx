@@ -1,11 +1,18 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { groupsApi } from '../api/client'
+import { useAuth } from '../context/AuthContext'
+import { useToast } from '../context/ToastContext'
+import GroupCreateModal from '../components/GroupCreateModal'
 
 export default function GroupsPage() {
+  const { user } = useAuth()
+  const toast = useToast()
+
   const [groups, setGroups] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const [creating, setCreating] = useState(false)
 
   useEffect(() => {
     let cancelled = false
@@ -19,15 +26,33 @@ export default function GroupsPage() {
     }
   }, [])
 
-  if (loading) return <p className="page-loading">Загружаем группы…</p>
-  if (error) return <p className="form-error">{error}</p>
+  const onCreated = (created) => {
+    setGroups((prev) => [created, ...prev])
+    toast.success(`Группа «${created.title}» создана`)
+  }
 
   return (
     <div className="groups-page">
-      <h1 className="page-title">Группы</h1>
+      <header className="groups-page__head">
+        <h1 className="page-title">Группы</h1>
+        {user && (
+          <button
+            type="button"
+            className="btn-primary"
+            onClick={() => setCreating(true)}
+          >
+            + Создать группу
+          </button>
+        )}
+      </header>
 
-      {groups.length === 0 && (
-        <p className="feed__empty">Групп пока нет</p>
+      {loading && <p className="page-loading">Загружаем группы…</p>}
+      {error && <p className="form-error">{error}</p>}
+
+      {!loading && !error && groups.length === 0 && (
+        <p className="feed__empty">
+          Групп пока нет — создайте первую!
+        </p>
       )}
 
       <ul className="groups-grid">
@@ -43,6 +68,12 @@ export default function GroupsPage() {
           </li>
         ))}
       </ul>
+
+      <GroupCreateModal
+        open={creating}
+        onClose={() => setCreating(false)}
+        onCreated={onCreated}
+      />
     </div>
   )
 }

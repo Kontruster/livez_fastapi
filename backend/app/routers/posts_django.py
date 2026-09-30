@@ -13,7 +13,7 @@ from app.exceptions import (CannotFollowSelfError, GroupNotFoundError,
                             UserNotFoundError)
 from app.models import User
 from app.schemas import *
-from app.services.group import GroupService
+from app.services.group import GroupService, GroupAlreadyExistsError
 from app.services.post import PostService
 from app.services.user import UserService
 
@@ -27,6 +27,8 @@ def handle_domain_exception(exc: Exception):
         raise HTTPException(status_code=404, detail=str(exc))
     if isinstance(exc, PermissionDeniedError):
         raise HTTPException(status_code=403, detail=str(exc))
+    if isinstance(exc, GroupAlreadyExistsError):
+        raise HTTPException(status_code=409, detail=str(exc))
     logger.exception("Unhandled error in router: %s", exc)
     raise HTTPException(status_code=500, detail="Внутренняя ошибка сервера")
 
@@ -52,7 +54,7 @@ async def follow_index(
         handle_domain_exception(e)
 
 
-@router.get("/groups/{slug}/", response_model=Page[PostList])
+@router.get("/groups/{slug}/", response_model=GroupDetailResponse)
 async def group_posts(
     slug: str,
     service: PostService = Depends(get_post_service),
@@ -141,6 +143,18 @@ async def list_groups(
 ):
     try:
         return await service.get_all_groups()
+    except Exception as e:
+        handle_domain_exception(e)
+
+
+@router.post("/groups/", response_model=GroupRead, status_code=201)
+async def create_group(
+    form: GroupCreate,
+    service: GroupService = Depends(get_group_service),
+    current_user: User = Depends(current_active_user),
+):
+    try:
+        return await service.create_group(form)
     except Exception as e:
         handle_domain_exception(e)
 

@@ -1,11 +1,19 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { postsApi } from '../api/client'
 
-export default function PostForm({ groups = [], onCreated }) {
+export default function PostForm({
+  groups = [],
+  fixedGroupId,
+  onCreated,
+}) {
   const [text, setText] = useState('')
-  const [groupId, setGroupId] = useState('')
+  const [groupId, setGroupId] = useState(fixedGroupId ? String(fixedGroupId) : '')
   const [error, setError] = useState('')
   const [busy, setBusy] = useState(false)
+
+  useEffect(() => {
+    if (fixedGroupId) setGroupId(String(fixedGroupId))
+  }, [fixedGroupId])
 
   const onSubmit = async (e) => {
     e.preventDefault()
@@ -17,7 +25,7 @@ export default function PostForm({ groups = [], onCreated }) {
       if (groupId) payload.group_id = Number(groupId)
       const created = await postsApi.create(payload)
       setText('')
-      setGroupId('')
+      if (!fixedGroupId) setGroupId('')
       onCreated?.(created)
     } catch (err) {
       setError(err.message || 'Не удалось создать пост')
@@ -30,7 +38,9 @@ export default function PostForm({ groups = [], onCreated }) {
     <form className="post-form" onSubmit={onSubmit}>
       <textarea
         className="post-form__text"
-        placeholder="О чём думаешь?"
+        placeholder={
+          fixedGroupId ? 'Написать в эту группу…' : 'О чём думаешь?'
+        }
         value={text}
         onChange={(e) => setText(e.target.value)}
         rows={3}
@@ -39,7 +49,7 @@ export default function PostForm({ groups = [], onCreated }) {
       />
 
       <div className="post-form__row">
-        {groups.length > 0 && (
+        {!fixedGroupId && groups.length > 0 && (
           <select
             className="post-form__select"
             value={groupId}
