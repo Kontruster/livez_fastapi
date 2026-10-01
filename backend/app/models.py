@@ -1,7 +1,7 @@
 from fastapi_users.db import SQLAlchemyBaseUserTable
 from sqlalchemy import (Column, DateTime, ForeignKey, Integer, String, Text,
                         func)
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, Mapped, mapped_column
 
 from app.database import Base
 
@@ -10,9 +10,9 @@ class User(SQLAlchemyBaseUserTable[int], Base):
     __tablename__ = "users"
     id = Column(Integer, primary_key=True, index=True)
     username = Column(String(50), unique=True, index=True, nullable=False, default='first')
-    
     posts = relationship("Post", back_populates="author", cascade="all, delete-orphan")
     comments = relationship("Comment", back_populates="author")
+    avatar_url = mapped_column(String, nullable=True)   # ← новое
 
 class Group(Base):
     __tablename__ = "groups"

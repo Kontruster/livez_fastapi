@@ -6,7 +6,7 @@ const JSON_HEADERS = { 'Content-Type': 'application/json' }
 async function request(path, { method = 'GET', body, isForm = false } = {}) {
   const options = {
     method,
-    credentials: 'include', // обязательно: шлём cookie с сессией
+    credentials: 'include',
     headers: isForm ? undefined : JSON_HEADERS,
   }
 
@@ -39,7 +39,6 @@ async function request(path, { method = 'GET', body, isForm = false } = {}) {
 
 // ---------- Auth (fastapi-users) ----------
 export const authApi = {
-  // Логин — form-urlencoded, поле называется username (туда кладём email)
   login: (email, password) => {
     const form = new URLSearchParams()
     form.append('username', email)
@@ -113,4 +112,24 @@ export const profileApi = {
     request(`/profile/${encodeURIComponent(username)}/follow/`, {
       method: 'DELETE',
     }),
+}
+
+export const accountApi = {
+  changeUsername: (username) =>
+    request('/users/me/profile', { method: 'PATCH', body: { username } }),
+
+  changePassword: (oldPassword, newPassword) =>
+    request('/users/me/password', {
+      method: 'POST',
+      body: { old_password: oldPassword, new_password: newPassword },
+    }),
+
+  uploadAvatar: (file) => {
+    const fd = new FormData()
+    fd.append('file', file)
+    return request('/users/me/avatar', { method: 'POST', body: fd, isForm: true })
+  },
+
+  deleteAccount: (password) =>
+    request('/users/me', { method: 'DELETE', body: { password } }),
 }

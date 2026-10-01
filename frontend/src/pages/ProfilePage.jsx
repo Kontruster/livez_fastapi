@@ -98,8 +98,19 @@ export default function ProfilePage() {
   return (
     <div className="profile">
       <header className="profile__head">
-        <div className="profile__avatar" aria-hidden="true">
-          {(author.username || author.email || '?')[0].toUpperCase()}
+        <div className="profile__avatar">
+          {author.avatar_url ? (
+            <img
+              className="avatar-xs"
+              src={author.avatar_url}
+              alt=""
+              loading="lazy"
+            />
+          ) : (
+            <span className="avatar-xs">
+              {(author.username || '?')[0].toUpperCase()}
+            </span>
+          )}
         </div>
 
         <div className="profile__info">

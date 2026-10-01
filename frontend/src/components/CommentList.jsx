@@ -47,11 +47,15 @@ export default function CommentList({ postId, comments = [], onAdded }) {
           return (
             <li key={c.id} className="comment">
               <div className="comment__head">
+                {author.avatar_url ? (
+                  <img className="avatar-xs" src={author.avatar_url} alt="" />
+                ) : (
+                  <span className="avatar-xs">
+                    {(author.username || '?')[0].toUpperCase()}
+                  </span>
+                )}
                 {author.username ? (
-                  <Link
-                    to={`/profile/${author.username}`}
-                    className="comment__author"
-                  >
+                  <Link to={`/profile/${author.username}`} className="comment__author">
                     {author.username}
                   </Link>
                 ) : (

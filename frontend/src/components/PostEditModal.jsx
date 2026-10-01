@@ -8,7 +8,6 @@ export default function PostEditModal({ open, post, onClose, onSaved }) {
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
 
-  // при открытии подставляем текущие значения
   useEffect(() => {
     if (open && post) {
       setText(post.text || '')

@@ -19,6 +19,13 @@ export default function PostCard({ post, isOwner, onEdit, onDelete }) {
     <article className="post-card">
       <header className="post-card__head">
         <div className="post-card__author">
+          {author.avatar_url ? (
+            <img className="avatar-xs" src={author.avatar_url} alt="" />
+          ) : (
+            <span className="avatar-xs">
+              {(author.username || '?')[0].toUpperCase()}
+            </span>
+          )}
           {author.username ? (
             <Link to={`/profile/${author.username}`} className="post-card__name">
               {author.username}

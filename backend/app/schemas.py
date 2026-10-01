@@ -5,19 +5,28 @@ from fastapi_pagination import Page
 from fastapi_users import schemas
 from pydantic import BaseModel, ConfigDict, EmailStr, field_validator, Field
 import re
-# class UserShort(BaseModel):
-#     id: int
-#     username: str
-#     model_config = ConfigDict(from_attributes=True)
+
 
 class UserRead(schemas.BaseUser[int]):
     username: str
-    
+    avatar_url: Optional[str] = None
     model_config = ConfigDict(from_attributes=True)
 
 class UserCreate(schemas.BaseUserCreate):
     username: str
     email: EmailStr
+
+class UsernameChange(BaseModel):
+    username: str = Field(min_length=3, max_length=64)
+
+
+class PasswordChange(BaseModel):
+    old_password: str
+    new_password: str = Field(min_length=6)
+
+
+class AccountDelete(BaseModel):
+    password: str
 
 class GroupRead(BaseModel):
     id: int
