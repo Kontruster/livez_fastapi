@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { postsApi } from '../api/client'
+import ImageUploader from './ImageUploader'
 
 export default function PostForm({
   groups = [],
@@ -7,7 +8,10 @@ export default function PostForm({
   onCreated,
 }) {
   const [text, setText] = useState('')
-  const [groupId, setGroupId] = useState(fixedGroupId ? String(fixedGroupId) : '')
+  const [images, setImages] = useState([]);
+  const [groupId, setGroupId] = useState(
+    fixedGroupId ? String(fixedGroupId) : '',
+  )
   const [error, setError] = useState('')
   const [busy, setBusy] = useState(false)
 
@@ -23,6 +27,10 @@ export default function PostForm({
     try {
       const payload = { text: text.trim() }
       if (groupId) payload.group_id = Number(groupId)
+      if (images.length > 0) {
+        payload.image = images[0]
+        payload.images = images
+      }
       const created = await postsApi.create(payload)
       setText('')
       if (!fixedGroupId) setGroupId('')
@@ -46,6 +54,13 @@ export default function PostForm({
         rows={3}
         maxLength={2000}
         required
+      />
+
+      <ImageUploader
+        multiple
+        values={images}
+        onValuesChange={setImages}
+        disabled={busy}
       />
 
       <div className="post-form__row">

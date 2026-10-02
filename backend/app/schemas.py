@@ -12,9 +12,11 @@ class UserRead(schemas.BaseUser[int]):
     avatar_url: Optional[str] = None
     model_config = ConfigDict(from_attributes=True)
 
+
 class UserCreate(schemas.BaseUserCreate):
     username: str
     email: EmailStr
+
 
 class UsernameChange(BaseModel):
     username: str = Field(min_length=3, max_length=64)
@@ -28,12 +30,14 @@ class PasswordChange(BaseModel):
 class AccountDelete(BaseModel):
     password: str
 
+
 class GroupRead(BaseModel):
     id: int
     title: str
     slug: str
     description: str
     model_config = ConfigDict(from_attributes=True)
+
 
 class GroupCreate(BaseModel):
     title: str = Field(min_length=1, max_length=200)
@@ -51,20 +55,25 @@ class GroupCreate(BaseModel):
             )
         return v
 
+
+class PostImageRead(BaseModel):
+    id: int
+    url: str
+    position: int
+
+    model_config = ConfigDict(from_attributes=True)
+
+
 class PostCreate(BaseModel):
     text: str
     group_id: Optional[int] = None
     image: Optional[str] = None
-
-# class PostRead(PostCreate):
-#     id: int
-#     pub_date: datetime
-#     author_id: int
-#     model_config = ConfigDict(from_attributes=True)
+    images: Optional[list[str]] = None
 
 
 class CommentCreate(BaseModel):
     text: str
+
 
 class CommentRead(CommentCreate):
     id: int
@@ -73,10 +82,12 @@ class CommentRead(CommentCreate):
     author: UserRead
     model_config = ConfigDict(from_attributes=True)
 
+
 class UserShort(BaseModel):
     id: int
     username: str
     model_config = ConfigDict(from_attributes=True)
+
 
 class PostList(BaseModel):
     id: int
@@ -88,6 +99,8 @@ class PostList(BaseModel):
     author_id: int
     group_id: Optional[int] = None
     model_config = ConfigDict(from_attributes=True)
+    images: list[PostImageRead] = []
+
 
 class PostDetail(BaseModel):
     id: int
@@ -98,10 +111,13 @@ class PostDetail(BaseModel):
     group: Optional[GroupRead] = None
     comments: list[CommentRead] = []
     model_config = ConfigDict(from_attributes=True)
+    images: list[PostImageRead] = []
+
 
 class PostDetailResponse(BaseModel):
     post: PostDetail
     author_post_count: int
+
 
 class ProfileResponse(BaseModel):
     author: UserRead
@@ -109,6 +125,7 @@ class ProfileResponse(BaseModel):
     is_following: bool
     total_posts: int
     model_config = ConfigDict(from_attributes=True)
+
 
 class GroupDetailResponse(BaseModel):
     group: GroupRead

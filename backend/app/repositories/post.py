@@ -1,10 +1,11 @@
 from fastapi_pagination import Page, Params
 from fastapi_pagination.ext.sqlalchemy import paginate
-from sqlalchemy import delete, desc, func, select
+from sqlalchemy import desc, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import joinedload, selectinload
 
-from app.models import Comment, Group, Post, User
+from app.utils.files import _try_delete_local_file
+from app.models import Comment, Group, Post, User, PostImage
 
 
 class PostRepository:
@@ -14,7 +15,10 @@ class PostRepository:
     async def get_feed(self, q: str | None) -> Page:
         stmt = (
             select(Post)
-            .options(joinedload(Post.author))
+            .options(
+                joinedload(Post.author),
+                selectinload(Post.images),
+            )
             .order_by(desc(Post.pub_date))
         )
         if q:
@@ -27,7 +31,10 @@ class PostRepository:
             select(Post)
             .join(Follow, Post.author_id == Follow.author_id)
             .where(Follow.user_id == user_id)
-            .options(joinedload(Post.author))
+            .options(
+                joinedload(Post.author),
+                selectinload(Post.images),
+            )
             .order_by(desc(Post.pub_date))
         )
         return await paginate(self.session, stmt)
@@ -36,7 +43,10 @@ class PostRepository:
         stmt = (
             select(Post)
             .where(Post.group_id == group_id)
-            .options(joinedload(Post.author))
+            .options(
+                joinedload(Post.author),
+                selectinload(Post.images),
+            )
             .order_by(desc(Post.pub_date))
         )
         return await paginate(self.session, stmt, params=Params(page=1, size=10))
@@ -47,7 +57,10 @@ class PostRepository:
         await self.session.commit()
         stmt = (
             select(Post)
-            .options(joinedload(Post.author))
+            .options(
+                joinedload(Post.author),
+                selectinload(Post.images),
+            )
             .where(Post.id == post.id)
         )
         return await self.session.scalar(stmt)
@@ -62,13 +75,19 @@ class PostRepository:
             .options(
                 joinedload(Post.author),
                 joinedload(Post.group),
-                selectinload(Post.comments).options(joinedload(Comment.author)),
+                selectinload(Post.comments).options(
+                    joinedload(Comment.author)
+                ),
+                selectinload(Post.images),
             )
             .where(Post.id == post_id)
         )
         return await self.session.scalar(stmt)
 
     async def update(self, post: Post, update_data: dict) -> Post:
+        if "image" in update_data and update_data["image"] != post.image:
+            _try_delete_local_file(post.image)
+
         for field, value in update_data.items():
             setattr(post, field, value)
         await self.session.commit()
@@ -76,6 +95,10 @@ class PostRepository:
         return post
 
     async def delete(self, post: Post) -> None:
+        _try_delete_local_file(post.image)
+        for img in getattr(post, "images", []) or []:
+            _try_delete_local_file(img.url)
+
         await self.session.delete(post)
         await self.session.commit()
 
@@ -93,3 +116,15 @@ class PostRepository:
             .where(Comment.id == comment.id)
         )
         return await self.session.scalar(stmt)
+
+    async def set_images(self, post_id: int, urls: list[str]) -> None:
+        stmt = select(PostImage).where(PostImage.post_id == post_id)
+        old = (await self.session.scalars(stmt)).all()
+        for img in old:
+            _try_delete_local_file(img.url)
+            await self.session.delete(img)
+
+        for i, url in enumerate(urls):
+            self.session.add(PostImage(post_id=post_id, url=url, position=i))
+
+        await self.session.commit()

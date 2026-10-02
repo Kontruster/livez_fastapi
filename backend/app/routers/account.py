@@ -8,6 +8,7 @@ from app.core.auth import current_active_user, get_user_manager, UserManager
 from app.database import get_db
 from app.models import User, Post, Comment, Follow
 from app.schemas import UserRead, UsernameChange, PasswordChange, AccountDelete
+from app.utils.files import _try_delete_local_file
 
 router = APIRouter(prefix="/users/me", tags=["account"])
 
@@ -88,7 +89,8 @@ async def upload_avatar(
     path.write_bytes(content)
 
     if current_user.avatar_url:
-        old = Path("uploads") / current_user.avatar_url.replace("/uploads/", "")
+        old = _try_delete_local_file(current_user.avatar_url)
+        current_user.avatar_url = f"/uploads/avatars/{filename}"
         old.unlink(missing_ok=True)
 
     current_user.avatar_url = f"/uploads/avatars/{filename}"

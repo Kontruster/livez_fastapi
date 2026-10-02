@@ -47,8 +47,12 @@ export default function PostCard({ post, isOwner, onEdit, onDelete }) {
 
       <Link to={`/posts/${post.id}`} className="post-card__body">
         {post.text && <p className="post-card__text">{post.text}</p>}
-        {post.image && (
-          <img className="post-card__image" src={post.image} alt="" loading="lazy" />
+        {(post.images?.length > 0 ? post.images.map((i) => i.url) : post.image ? [post.image] : []).length > 0 && (
+          <div className="post-card__gallery">
+            {(post.images?.length > 0 ? post.images.map((i) => i.url) : [post.image]).map((url) => (
+              <img key={url} className="post-card__image" src={url} alt="" loading="lazy" />
+            ))}
+          </div>
         )}
       </Link>
 

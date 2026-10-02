@@ -8,6 +8,8 @@ services:
     ports:
       - "8000:8000"
     volumes:
+      - ./backend:/app  
+      - ./backend/alembic/versions:/app/alembic/versions
       - ./backend/uploads:/app/uploads
     environment:
       DATABASE_URL: postgresql+asyncpg://postgres:postgres@db:5432/your_db

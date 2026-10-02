@@ -1,6 +1,6 @@
 from app.exceptions import (GroupNotFoundError, PermissionDeniedError,
                             PostNotFoundError)
-from app.models import User
+from app.models import User, Post
 from app.repositories.group import GroupRepository
 from app.repositories.post import PostRepository
 from app.schemas import (CommentCreate, CommentRead, GroupRead, PostCreate,
@@ -23,18 +23,20 @@ class PostService:
         group = await self.group_repo.get_by_slug(slug)
         if not group:
             raise GroupNotFoundError("Сообщество не найдено")
-        
+
         posts_page = await self.post_repo.get_group_posts(group.id)
         return {"group": group, "posts": posts_page}
 
-    async def create_post(self, current_user: User, form: PostCreate) -> PostList:
-        new_post = await self.post_repo.create(
+    async def create_post(self, current_user: User, form: PostCreate) -> Post:
+        post = await self.post_repo.create(
             author_id=current_user.id,
             text=form.text,
             image=form.image,
-            group_id=form.group_id
+            group_id=form.group_id,
         )
-        return PostList.model_validate(new_post)
+        if form.images:
+            await self.post_repo.set_images(post.id, form.images)
+        return await self.post_repo.get_by_id(post.id)
 
     async def edit_post(self, current_user: User, post_id: int, form: PostCreate) -> PostList:
         post = await self.post_repo.get_by_id(post_id)
@@ -51,7 +53,7 @@ class PostService:
         post = await self.post_repo.get_detail_by_id(post_id)
         if not post:
             raise PostNotFoundError("Пост не найден")
-        
+
         author_post_count = await self.post_repo.get_author_post_count(post.author_id)
         return PostDetailResponse(post=post, author_post_count=author_post_count)
 
@@ -61,7 +63,7 @@ class PostService:
             raise PostNotFoundError("Пост не найден")
         if post.author_id != current_user.id:
             raise PermissionDeniedError("Вы можете удалить только свои посты")
-            
+
         await self.post_repo.delete(post)
         return {"status": "success"}
 
@@ -69,7 +71,7 @@ class PostService:
         post = await self.post_repo.get_by_id(post_id)
         if not post:
             raise PostNotFoundError("Пост не найден")
-            
+
         comment = await self.post_repo.add_comment(
             post_id=post_id,
             author_id=current_user.id,

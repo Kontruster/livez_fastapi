@@ -2,7 +2,7 @@ from fastapi_pagination import Page, Params
 from fastapi_pagination.ext.sqlalchemy import paginate
 from sqlalchemy import delete, desc, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import joinedload
+from sqlalchemy.orm import joinedload, selectinload
 
 from app.models import Follow, Post, User
 
@@ -19,7 +19,10 @@ class UserRepository:
         stmt = (
             select(Post)
             .where(Post.author_id == author_id)
-            .options(joinedload(Post.author))
+            .options(
+                joinedload(Post.author),
+                selectinload(Post.images),
+            )
             .order_by(desc(Post.pub_date))
         )
         return await paginate(self.session, stmt, params=Params(page=1, size=50))

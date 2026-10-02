@@ -1,30 +1,32 @@
 import { useEffect, useState } from 'react'
 import Modal from './Modal'
+import ImageUploader from './ImageUploader'
 import { postsApi } from '../api/client'
 
 export default function PostEditModal({ open, post, onClose, onSaved }) {
   const [text, setText] = useState('')
-  const [image, setImage] = useState('')
+  const [images, setImages] = useState([])
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
 
   useEffect(() => {
     if (open && post) {
       setText(post.text || '')
-      setImage(post.image || '')
+      setImages((post.images || []).map((i) => i.url))
       setError('')
     }
   }, [open, post])
 
   const onSubmit = async (e) => {
-    e.preventDefault()
+    e?.preventDefault()
     if (!text.trim()) return
     setBusy(true)
     setError('')
     try {
       const updated = await postsApi.update(post.id, {
         text: text.trim(),
-        image: image.trim() || null,
+        image: images[0] || null,
+        images,
       })
       onSaved(updated)
       onClose()
@@ -39,7 +41,7 @@ export default function PostEditModal({ open, post, onClose, onSaved }) {
     <Modal
       open={open}
       title="Редактировать пост"
-      onClose={busy ? () => {} : onClose}
+      onClose={busy ? () => { } : onClose}
       footer={
         <div className="modal__actions">
           <button
@@ -73,26 +75,15 @@ export default function PostEditModal({ open, post, onClose, onSaved }) {
           />
         </label>
 
-        <label className="form-field">
-          <span>Ссылка на картинку (необязательно)</span>
-          <input
-            type="url"
-            value={image}
-            onChange={(e) => setImage(e.target.value)}
-            placeholder="https://…"
+        <div className="form-field">
+          <span>Картинка</span>
+          <ImageUploader
+            multiple
+            values={images}
+            onValuesChange={setImages}
+            disabled={busy}
           />
-        </label>
-
-        {image && (
-          <img
-            className="post-form__preview"
-            src={image}
-            alt=""
-            onError={(e) => {
-              e.currentTarget.style.display = 'none'
-            }}
-          />
-        )}
+        </div>
 
         {error && <p className="form-error">{error}</p>}
       </form>

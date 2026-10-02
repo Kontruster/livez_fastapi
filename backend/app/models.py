@@ -14,6 +14,7 @@ class User(SQLAlchemyBaseUserTable[int], Base):
     comments = relationship("Comment", back_populates="author")
     avatar_url = mapped_column(String, nullable=True)   # ← новое
 
+
 class Group(Base):
     __tablename__ = "groups"
     id = Column(Integer, primary_key=True, index=True)
@@ -21,6 +22,7 @@ class Group(Base):
     slug = Column(String, unique=True, nullable=False, index=True)
     description = Column(Text)
     posts = relationship("Post", back_populates="group")
+
 
 class Post(Base):
     __tablename__ = "posts"
@@ -33,6 +35,12 @@ class Post(Base):
     author = relationship("User", back_populates="posts")
     group = relationship("Group", back_populates="posts")
     comments = relationship("Comment", back_populates="post", cascade="all, delete-orphan")
+    images: Mapped[list["PostImage"]] = relationship(
+        back_populates="post",
+        cascade="all, delete-orphan",
+        order_by="PostImage.position",
+    )
+
 
 class Comment(Base):
     __tablename__ = "comments"
@@ -45,8 +53,22 @@ class Comment(Base):
     post = relationship("Post", back_populates="comments")
     author = relationship("User", back_populates="comments")
 
+
 class Follow(Base):
     __tablename__ = "follows"
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey("users.id"))
     author_id = Column(Integer, ForeignKey("users.id"))
+
+
+class PostImage(Base):
+    __tablename__ = "post_images"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    post_id: Mapped[int] = mapped_column(
+        ForeignKey("posts.id", ondelete="CASCADE"), nullable=False, index=True
+    )
+    url: Mapped[str] = mapped_column(String, nullable=False)
+    position: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
+
+    post: Mapped["Post"] = relationship(back_populates="images")

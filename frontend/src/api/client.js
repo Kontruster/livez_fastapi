@@ -133,3 +133,15 @@ export const accountApi = {
   deleteAccount: (password) =>
     request('/users/me', { method: 'DELETE', body: { password } }),
 }
+
+export const uploadsApi = {
+  postImage: (file) => {
+    const fd = new FormData()
+    fd.append('file', file)
+    return request('/media/post-image', {
+      method: 'POST',
+      body: fd,
+      isForm: true,
+    })
+  },
+}
