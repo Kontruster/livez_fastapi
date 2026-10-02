@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi_pagination import add_pagination
 
+from app.config import settings
 from app.routers import posts_django
 from app.routers.auth_users import router as auth_users_router
 
@@ -20,7 +21,7 @@ app = FastAPI(title="livej_fastAPI", lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],
+    allow_origins=settings.CORS_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
