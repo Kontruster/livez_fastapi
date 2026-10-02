@@ -41,7 +41,7 @@
 
   /* Утилитарное */
   --sidebar-w: 260px;
-  --content-max: 640px;
+  --content-max: 760px;
 }
 
 * {
@@ -208,7 +208,8 @@ textarea {
 
 .app-main>* {
   width: 100%;
-  max-width: var(--content-max);
+  max-width: min(var(--content-max), 100%);
+  --content-max: clamp(520px, 60vw, 820px);
 }
 
 /* --- Sidebar --- */
@@ -561,6 +562,14 @@ textarea {
   word-break: break-word;
   font-size: 15px;
   line-height: 1.55;
+}
+
+.post-card__text--clickable {
+  cursor: pointer;
+  transition: color .12s;
+}
+.post-card__text--clickable:hover {
+  color: var(--text-2);
 }
 
 .post-card__image,
@@ -1334,6 +1343,7 @@ textarea {
   display: grid;
   gap: 6px;
   grid-template-columns: 1fr;
+  margin-top: 8px;
 }
 
 .post-card__gallery:has(img:nth-child(2)) {
@@ -1347,4 +1357,182 @@ textarea {
   object-fit: cover;
   border-radius: var(--radius);
   border: 1px solid var(--border);
+}
+
+/* --- Gallery в карточке --- */
+.post-card__gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 150px);
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.post-card__gallery-item {
+  padding: 0;
+  margin: 0;
+  width: 150px;
+  height: 150px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface-2);
+  overflow: hidden;
+  cursor: zoom-in;
+  transition: border-color .15s;
+  position: relative;
+}
+
+.post-card__gallery-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  border-radius: 0;
+}
+
+.post-card__gallery-item:hover {
+  border-color: var(--accent);
+}
+
+/* --- Gallery в PostDetail --- */
+.post-detail__gallery {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: 1fr;
+}
+.post-detail__gallery .post-detail__image {
+  width: 100%;
+  max-height: 520px;
+  object-fit: contain;
+  background: var(--surface-2);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+}
+
+/* --- Lightbox --- */
+.lightbox-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(5, 9, 14, 0.9);
+  backdrop-filter: blur(6px);
+  z-index: 300;
+  display: grid;
+  place-items: center;
+  animation: fade-in .12s ease-out;
+}
+
+.lightbox {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 48px;
+  overflow: hidden;
+}
+
+.lightbox__image {
+  max-width: calc(100vw - 96px);
+  max-height: calc(100vh - 96px);
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  border-radius: 6px;
+  user-select: none;
+  -webkit-user-drag: none;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  animation: lightbox-in .16s ease-out;
+}
+
+/* Клик-зоны слева и справа */
+.lightbox__zone {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 25%;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  color: #fff;
+  font-size: 48px;
+  line-height: 1;
+  opacity: 0;
+  transition: opacity .15s, background .15s;
+  user-select: none;
+}
+.lightbox__zone:hover {
+  opacity: 1;
+  background: linear-gradient(
+    to right,
+    rgba(0, 0, 0, 0.35),
+    transparent
+  );
+}
+.lightbox__zone--prev { left: 0; }
+.lightbox__zone--next {
+  right: 0;
+}
+.lightbox__zone--next:hover {
+  background: linear-gradient(
+    to left,
+    rgba(0, 0, 0, 0.35),
+    transparent
+  );
+}
+.lightbox__zone-arrow {
+  pointer-events: none;
+}
+
+/* Кнопка закрытия */
+.lightbox__close {
+  position: absolute;
+  top: 16px;
+  right: 20px;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.55);
+  color: #fff;
+  font-size: 28px;
+  line-height: 1;
+  display: grid;
+  place-items: center;
+  backdrop-filter: blur(4px);
+  z-index: 2;
+}
+.lightbox__close:hover {
+  background: rgba(0, 0, 0, 0.75);
+}
+
+/* Счётчик */
+.lightbox__counter {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.55);
+  color: #fff;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  backdrop-filter: blur(4px);
+  pointer-events: none;
+  z-index: 2;
+}
+
+@keyframes lightbox-in {
+  from { transform: scale(0.96); opacity: 0; }
+  to   { transform: scale(1);    opacity: 1; }
+}
+
+@media (max-width: 600px) {
+  .lightbox { padding: 16px; }
+  .lightbox__image {
+    max-width: calc(100vw - 32px);
+    max-height: calc(100vh - 32px);
+  }
+  .lightbox__zone { width: 35%; font-size: 36px; }
+  .lightbox__close { top: 10px; right: 12px; }
 }

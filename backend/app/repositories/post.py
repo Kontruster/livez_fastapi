@@ -66,7 +66,14 @@ class PostRepository:
         return await self.session.scalar(stmt)
 
     async def get_by_id(self, post_id: int) -> Post | None:
-        stmt = select(Post).where(Post.id == post_id)
+        stmt = (
+            select(Post)
+            .options(
+                joinedload(Post.author),
+                selectinload(Post.images),
+            )
+            .where(Post.id == post_id)
+        )
         return await self.session.scalar(stmt)
 
     async def get_detail_by_id(self, post_id: int) -> Post | None:

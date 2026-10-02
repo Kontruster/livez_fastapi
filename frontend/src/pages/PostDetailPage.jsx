@@ -72,9 +72,21 @@ export default function PostDetailPage() {
       </header>
 
       {post.text && <p className="post-detail__text">{post.text}</p>}
-      {post.image && (
+      {post.images?.length > 0 ? (
+        <div className="post-detail__gallery">
+          {post.images.map((img) => (
+            <img
+              key={img.id}
+              className="post-detail__image"
+              src={img.url}
+              alt=""
+              loading="lazy"
+            />
+          ))}
+        </div>
+      ) : post.image ? (
         <img className="post-detail__image" src={post.image} alt="" />
-      )}
+      ) : null}
 
       <CommentList
         postId={post.id}

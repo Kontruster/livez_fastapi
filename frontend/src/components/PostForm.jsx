@@ -33,6 +33,7 @@ export default function PostForm({
       }
       const created = await postsApi.create(payload)
       setText('')
+      setImages([])
       if (!fixedGroupId) setGroupId('')
       onCreated?.(created)
     } catch (err) {

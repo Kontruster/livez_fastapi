@@ -1,4 +1,6 @@
-import { Link } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
+import { useState } from 'react'
+import Lightbox from './Lightbox'
 
 function formatDate(iso) {
   if (!iso) return ''
@@ -14,6 +16,14 @@ export default function PostCard({ post, isOwner, onEdit, onDelete }) {
   const author = post.author || post.user || {}
   const group = post.group
   const commentsCount = post.comments_count ?? post.comments?.length
+  const navigate = useNavigate()
+  const [lightboxIndex, setLightboxIndex] = useState(null)
+  const urls = post.images?.length > 0
+    ? post.images.map((i) => i.url)
+    : post.image
+      ? [post.image]
+      : []
+
 
   return (
     <article className="post-card">
@@ -45,16 +55,46 @@ export default function PostCard({ post, isOwner, onEdit, onDelete }) {
         <time className="post-card__date">{formatDate(post.pub_date)}</time>
       </header>
 
-      <Link to={`/posts/${post.id}`} className="post-card__body">
+      {/* <Link to={`/posts/${post.id}`} className="post-card__text-link">
         {post.text && <p className="post-card__text">{post.text}</p>}
-        {(post.images?.length > 0 ? post.images.map((i) => i.url) : post.image ? [post.image] : []).length > 0 && (
-          <div className="post-card__gallery">
-            {(post.images?.length > 0 ? post.images.map((i) => i.url) : [post.image]).map((url) => (
-              <img key={url} className="post-card__image" src={url} alt="" loading="lazy" />
-            ))}
-          </div>
-        )}
-      </Link>
+      </Link> */}
+
+      {post.text && (
+        <p
+          className="post-card__text post-card__text--clickable"
+          onClick={() => navigate(`/posts/${post.id}`)}
+          role="link"
+          tabIndex={0}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') navigate(`/posts/${post.id}`)
+          }}
+        >
+          {post.text}
+        </p>
+      )}
+
+      {urls.length > 0 && (
+        <div className="post-card__gallery">
+          {urls.map((url, i) => (
+            <button
+              key={url}
+              type="button"
+              className="post-card__gallery-item"
+              onClick={() => setLightboxIndex(i)}
+            >
+              <img src={url} alt="" loading="lazy" />
+            </button>
+          ))}
+        </div>
+      )}
+
+      <Lightbox
+        open={lightboxIndex !== null}
+        images={urls}
+        index={lightboxIndex ?? 0}
+        onIndexChange={setLightboxIndex}
+        onClose={() => setLightboxIndex(null)}
+      />
 
       <footer className="post-card__foot">
         <Link to={`/posts/${post.id}`} className="post-card__comments-link">
