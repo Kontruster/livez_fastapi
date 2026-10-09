@@ -24,9 +24,7 @@ export default function Navbar() {
           <NavLink
             to="/"
             end
-            className={({ isActive }) =>
-              'sidebar__link' + (isActive ? ' active' : '')
-            }
+            className={({ isActive }) => 'sidebar__link' + (isActive ? ' active' : '')}
           >
             <span className="sidebar__icon">🏠</span>
             Лента
@@ -34,9 +32,7 @@ export default function Navbar() {
 
           <NavLink
             to="/groups"
-            className={({ isActive }) =>
-              'sidebar__link' + (isActive ? ' active' : '')
-            }
+            className={({ isActive }) => 'sidebar__link' + (isActive ? ' active' : '')}
           >
             <span className="sidebar__icon">👥</span>
             Группы
@@ -65,9 +61,7 @@ export default function Navbar() {
               ) : (
                 <span className="avatar-xs">{initial}</span>
               )}
-              <span className="sidebar__username">
-                {user.username || user.email}
-              </span>
+              <span className="sidebar__username">{user.username || user.email}</span>
             </Link>
             <Link to="/settings" className="nav-icon-link" title="Настройки">
               ⚙
@@ -97,17 +91,13 @@ export default function Navbar() {
           <NavLink
             to="/"
             end
-            className={({ isActive }) =>
-              'topbar__link' + (isActive ? ' active' : '')
-            }
+            className={({ isActive }) => 'topbar__link' + (isActive ? ' active' : '')}
           >
             Лента
           </NavLink>
           <NavLink
             to="/groups"
-            className={({ isActive }) =>
-              'topbar__link' + (isActive ? ' active' : '')
-            }
+            className={({ isActive }) => 'topbar__link' + (isActive ? ' active' : '')}
           >
             Группы
           </NavLink>

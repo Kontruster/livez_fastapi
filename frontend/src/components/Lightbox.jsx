@@ -81,13 +81,7 @@ export default function Lightbox({
           </div>
         )}
 
-        <img
-          key={src}
-          className="lightbox__image"
-          src={src}
-          alt=""
-          draggable={false}
-        />
+        <img key={src} className="lightbox__image" src={src} alt="" draggable={false} />
 
         {/* Клик по правой трети — вперёд */}
         {index < images.length - 1 && (

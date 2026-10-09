@@ -71,7 +71,9 @@ export default function SettingsPage() {
     try {
       await accountApi.changePassword(oldPassword, newPassword)
       toast.success('Пароль изменён')
-      setOldPassword(''); setNewPassword(''); setNewPassword2('')
+      setOldPassword('')
+      setNewPassword('')
+      setNewPassword2('')
     } catch (err) {
       toast.error(err.message || 'Не удалось изменить пароль')
     } finally {
@@ -220,45 +222,45 @@ export default function SettingsPage() {
         </button>
       </section>
 
-        <Modal
-            open={confirmOpen}
-            title="Удалить аккаунт?"
-            onClose={() => !deleteBusy && setConfirmOpen(false)}
-            footer={
-                <div className="modal__actions">
-                    <button
-                        type="button"
-                        className="btn-ghost"
-                        onClick={() => setConfirmOpen(false)}
-                        disabled={deleteBusy}
-                    >
-                        Отмена
-                    </button>
-                    <button
-                        type="button"
-                        className="btn-danger"
-                        onClick={deleteAccount}
-                        disabled={deleteBusy || !deletePass}
-                    >
-                        {deleteBusy ? 'Удаляем…' : 'Удалить навсегда'}
-                    </button>
-                </div>
-            }
-        >
-            <p className="confirm__message">
-                Это действие необратимо. Все ваши посты, комментарии и подписки
-                будут удалены. Введите пароль для подтверждения.
-            </p>
-            <label className="form-field" style={{ marginTop: 12 }}>
-                <span>Пароль</span>
-                <input
-                    type="password"
-                    value={deletePass}
-                    onChange={(e) => setDeletePass(e.target.value)}
-                    autoComplete="current-password"
-                />
-            </label>
-        </Modal>
+      <Modal
+        open={confirmOpen}
+        title="Удалить аккаунт?"
+        onClose={() => !deleteBusy && setConfirmOpen(false)}
+        footer={
+          <div className="modal__actions">
+            <button
+              type="button"
+              className="btn-ghost"
+              onClick={() => setConfirmOpen(false)}
+              disabled={deleteBusy}
+            >
+              Отмена
+            </button>
+            <button
+              type="button"
+              className="btn-danger"
+              onClick={deleteAccount}
+              disabled={deleteBusy || !deletePass}
+            >
+              {deleteBusy ? 'Удаляем…' : 'Удалить навсегда'}
+            </button>
+          </div>
+        }
+      >
+        <p className="confirm__message">
+          Это действие необратимо. Все ваши посты, комментарии и подписки будут удалены.
+          Введите пароль для подтверждения.
+        </p>
+        <label className="form-field" style={{ marginTop: 12 }}>
+          <span>Пароль</span>
+          <input
+            type="password"
+            value={deletePass}
+            onChange={(e) => setDeletePass(e.target.value)}
+            autoComplete="current-password"
+          />
+        </label>
+      </Modal>
     </div>
   )
 }

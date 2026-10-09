@@ -56,8 +56,9 @@ body,
 
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-    "Helvetica Neue", Arial, sans-serif;
+  font-family:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
+    sans-serif;
   font-size: 15px;
   line-height: 1.5;
   background: var(--bg);
@@ -78,7 +79,7 @@ h4 {
 a {
   color: var(--accent);
   text-decoration: none;
-  transition: color .12s;
+  transition: color 0.12s;
 }
 
 a:hover {
@@ -95,7 +96,10 @@ button {
   padding: 9px 16px;
   background: var(--accent);
   color: #fff;
-  transition: background .15s, transform .08s, opacity .15s;
+  transition:
+    background 0.15s,
+    transform 0.08s,
+    opacity 0.15s;
 }
 
 button:hover:not(:disabled) {
@@ -107,7 +111,7 @@ button:active:not(:disabled) {
 }
 
 button:disabled {
-  opacity: .5;
+  opacity: 0.5;
   cursor: not-allowed;
 }
 
@@ -168,7 +172,9 @@ select {
   padding: 10px 14px;
   width: 100%;
   outline: none;
-  transition: border-color .15s, background .15s;
+  transition:
+    border-color 0.15s,
+    background 0.15s;
 }
 
 input::placeholder,
@@ -206,7 +212,7 @@ textarea {
   align-items: center;
 }
 
-.app-main>* {
+.app-main > * {
   width: 100%;
   max-width: min(var(--content-max), 100%);
   --content-max: clamp(520px, 60vw, 820px);
@@ -252,7 +258,9 @@ textarea {
   color: var(--text-2);
   font-size: 15px;
   font-weight: 500;
-  transition: background .12s, color .12s;
+  transition:
+    background 0.12s,
+    color 0.12s;
 }
 
 .sidebar__link:hover {
@@ -322,7 +330,11 @@ textarea {
   place-items: center;
   padding: 24px;
   background:
-    radial-gradient(1200px 600px at 50% -20%, rgba(61, 155, 245, 0.08), transparent 60%),
+    radial-gradient(
+      1200px 600px at 50% -20%,
+      rgba(61, 155, 245, 0.08),
+      transparent 60%
+    ),
     var(--bg);
 }
 
@@ -463,7 +475,7 @@ textarea {
 }
 
 .tab:disabled {
-  opacity: .4;
+  opacity: 0.4;
 }
 
 .feed__search {
@@ -509,7 +521,9 @@ textarea {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  transition: border-color .15s, box-shadow .15s;
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s;
 }
 
 .post-card:hover {
@@ -566,7 +580,7 @@ textarea {
 
 .post-card__text--clickable {
   cursor: pointer;
-  transition: color .12s;
+  transition: color 0.12s;
 }
 .post-card__text--clickable:hover {
   color: var(--text-2);
@@ -601,7 +615,9 @@ textarea {
   gap: 6px;
   padding: 4px 8px;
   border-radius: var(--radius-sm);
-  transition: background .12s, color .12s;
+  transition:
+    background 0.12s,
+    color 0.12s;
 }
 
 .post-card__comments-link:hover {
@@ -866,7 +882,10 @@ textarea {
   border: 1px solid var(--border);
   border-radius: var(--radius);
   overflow: hidden;
-  transition: border-color .15s, transform .1s, box-shadow .15s;
+  transition:
+    border-color 0.15s,
+    transform 0.1s,
+    box-shadow 0.15s;
 }
 
 .group-card:hover {
@@ -941,7 +960,7 @@ textarea {
   place-items: center;
   padding: 20px;
   z-index: 100;
-  animation: fade-in .14s ease-out;
+  animation: fade-in 0.14s ease-out;
 }
 
 .modal {
@@ -954,7 +973,7 @@ textarea {
   display: flex;
   flex-direction: column;
   max-height: 90vh;
-  animation: modal-in .16s ease-out;
+  animation: modal-in 0.16s ease-out;
 }
 
 .modal__head {
@@ -1078,7 +1097,7 @@ textarea {
   min-width: 240px;
   max-width: 360px;
   cursor: pointer;
-  animation: toast-in .18s ease-out;
+  animation: toast-in 0.18s ease-out;
   box-shadow: var(--shadow-2);
 }
 
@@ -1274,7 +1293,9 @@ textarea {
   display: block;
   border: 1px solid transparent;
   border-radius: var(--radius);
-  transition: border-color .15s, background .15s;
+  transition:
+    border-color 0.15s,
+    background 0.15s;
   padding: 4px;
 }
 
@@ -1377,7 +1398,7 @@ textarea {
   background: var(--surface-2);
   overflow: hidden;
   cursor: zoom-in;
-  transition: border-color .15s;
+  transition: border-color 0.15s;
   position: relative;
 }
 
@@ -1418,7 +1439,7 @@ textarea {
   z-index: 300;
   display: grid;
   place-items: center;
-  animation: fade-in .12s ease-out;
+  animation: fade-in 0.12s ease-out;
 }
 
 .lightbox {
@@ -1441,7 +1462,7 @@ textarea {
   user-select: none;
   -webkit-user-drag: none;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-  animation: lightbox-in .16s ease-out;
+  animation: lightbox-in 0.16s ease-out;
 }
 
 /* Клик-зоны слева и справа */
@@ -1457,27 +1478,23 @@ textarea {
   font-size: 48px;
   line-height: 1;
   opacity: 0;
-  transition: opacity .15s, background .15s;
+  transition:
+    opacity 0.15s,
+    background 0.15s;
   user-select: none;
 }
 .lightbox__zone:hover {
   opacity: 1;
-  background: linear-gradient(
-    to right,
-    rgba(0, 0, 0, 0.35),
-    transparent
-  );
+  background: linear-gradient(to right, rgba(0, 0, 0, 0.35), transparent);
 }
-.lightbox__zone--prev { left: 0; }
+.lightbox__zone--prev {
+  left: 0;
+}
 .lightbox__zone--next {
   right: 0;
 }
 .lightbox__zone--next:hover {
-  background: linear-gradient(
-    to left,
-    rgba(0, 0, 0, 0.35),
-    transparent
-  );
+  background: linear-gradient(to left, rgba(0, 0, 0, 0.35), transparent);
 }
 .lightbox__zone-arrow {
   pointer-events: none;
@@ -1523,16 +1540,257 @@ textarea {
 }
 
 @keyframes lightbox-in {
-  from { transform: scale(0.96); opacity: 0; }
-  to   { transform: scale(1);    opacity: 1; }
+  from {
+    transform: scale(0.96);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
 @media (max-width: 600px) {
-  .lightbox { padding: 16px; }
+  .lightbox {
+    padding: 16px;
+  }
   .lightbox__image {
     max-width: calc(100vw - 32px);
     max-height: calc(100vh - 32px);
   }
-  .lightbox__zone { width: 35%; font-size: 36px; }
-  .lightbox__close { top: 10px; right: 12px; }
+  .lightbox__zone {
+    width: 35%;
+    font-size: 36px;
+  }
+  .lightbox__close {
+    top: 10px;
+    right: 12px;
+  }
+}
+
+
+/* =========================================================
+   Like button
+   ========================================================= */
+.like-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  background: transparent;
+  color: var(--text-2);
+  border: 1px solid transparent;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 500;
+  transition:
+    background 0.15s,
+    color 0.15s,
+    border-color 0.15s,
+    transform 0.08s;
+}
+
+.like-button:hover:not(:disabled) {
+  background: var(--surface-2);
+  color: var(--text);
+}
+
+.like-button:active:not(:disabled) {
+  transform: scale(0.96);
+}
+
+.like-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.like-button__icon {
+  font-size: 16px;
+  line-height: 1;
+  transition: transform 0.15s;
+}
+
+.like-button--active {
+  color: #ff5c7a;
+  background: rgba(255, 92, 122, 0.1);
+}
+
+.like-button--active:hover:not(:disabled) {
+  background: rgba(255, 92, 122, 0.16);
+  color: #ff5c7a;
+}
+
+.like-button--active .like-button__icon {
+  transform: scale(1.1);
+}
+
+.like-button__count {
+  font-variant-numeric: tabular-nums;
+  min-width: 1ch;
+}
+
+.post-card__reactions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.post-detail__reactions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+/* =========================================================
+   Вложенные комментарии
+   ========================================================= */
+.comments__list--nested {
+  margin-top: 10px;
+  margin-left: 16px;
+  padding-left: 12px;
+  border-left: 2px solid var(--border-2);
+  gap: 8px;
+}
+
+.comment__actions {
+  display: inline-flex;
+  gap: 4px;
+  margin-top: 8px;
+}
+
+.comment-form--reply {
+  margin-top: 8px;
+}
+
+.comment-form--reply input {
+  font-size: 14px;
+}
+
+.comments__login-hint {
+  color: var(--muted);
+  font-size: 14px;
+  margin: 0;
+}
+
+/* =========================================================
+   Приватные группы
+   ========================================================= */
+.badge-private {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: 8px;
+  padding: 2px 8px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--text-2);
+  background: var(--surface-3);
+  border: 1px solid var(--border-2);
+  border-radius: 999px;
+  vertical-align: middle;
+  line-height: 1.4;
+}
+
+.badge-private::before {
+  content: '🔒';
+  font-size: 10px;
+}
+
+.group-card--private .group-card__link {
+  background: linear-gradient(180deg, rgba(61, 155, 245, 0.05), transparent 40%);
+}
+
+.group-page__head {
+  padding: 20px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  gap: 8px;
+  align-items: flex-start;
+}
+
+.group-page__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin: 4px 0 8px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.group-page__stat b {
+  color: var(--text);
+  font-weight: 600;
+  margin-right: 2px;
+}
+
+.group-page__stat--private {
+  color: var(--text-2);
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: var(--surface-2);
+  border: 1px solid var(--border-2);
+}
+
+.group-access {
+  background: var(--surface);
+  border: 1px dashed var(--border-2);
+  border-radius: var(--radius-lg);
+  padding: 40px 24px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+.group-access__text {
+  color: var(--text-2);
+  margin: 0;
+}
+
+/* =========================================================
+   Профиль: счётчики
+   ========================================================= */
+.profile__stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.profile__stat b {
+  color: var(--text);
+  font-weight: 600;
+  margin-right: 2px;
+}
+
+/* =========================================================
+   Инлайн-чекбокс в форме
+   ========================================================= */
+.form-field--inline {
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 10px;
+  cursor: pointer;
+}
+
+.form-field--inline input[type='checkbox'] {
+  width: auto;
+  margin-top: 2px;
+  accent-color: var(--accent);
+  flex-shrink: 0;
+}
+
+.form-field--inline > span {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
 }

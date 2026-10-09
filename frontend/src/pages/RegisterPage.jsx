@@ -32,7 +32,13 @@ export default function RegisterPage() {
         <h1>Регистрация</h1>
         <label>
           Email
-          <input name="email" type="email" value={form.email} onChange={onChange} required />
+          <input
+            name="email"
+            type="email"
+            value={form.email}
+            onChange={onChange}
+            required
+          />
         </label>
         <label>
           Username

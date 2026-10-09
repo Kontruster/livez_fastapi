@@ -41,15 +41,10 @@ export default function PostEditModal({ open, post, onClose, onSaved }) {
     <Modal
       open={open}
       title="Редактировать пост"
-      onClose={busy ? () => { } : onClose}
+      onClose={busy ? () => {} : onClose}
       footer={
         <div className="modal__actions">
-          <button
-            type="button"
-            className="btn-ghost"
-            onClick={onClose}
-            disabled={busy}
-          >
+          <button type="button" className="btn-ghost" onClick={onClose} disabled={busy}>
             Отмена
           </button>
           <button

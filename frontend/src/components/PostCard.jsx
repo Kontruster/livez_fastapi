@@ -1,29 +1,33 @@
 import { useNavigate, Link } from 'react-router-dom'
 import { useState } from 'react'
 import Lightbox from './Lightbox'
+import LikeButton from './LikeButton'
 
 function formatDate(iso) {
   if (!iso) return ''
   const d = new Date(iso)
   if (Number.isNaN(d.getTime())) return ''
   return d.toLocaleString('ru-RU', {
-    day: 'numeric', month: 'long', year: 'numeric',
-    hour: '2-digit', minute: '2-digit',
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
   })
 }
 
-export default function PostCard({ post, isOwner, onEdit, onDelete }) {
+export default function PostCard({ post, isOwner, onEdit, onDelete, onLikeChange }) {
   const author = post.author || post.user || {}
   const group = post.group
   const commentsCount = post.comments_count ?? post.comments?.length
   const navigate = useNavigate()
   const [lightboxIndex, setLightboxIndex] = useState(null)
-  const urls = post.images?.length > 0
-    ? post.images.map((i) => i.url)
-    : post.image
-      ? [post.image]
-      : []
-
+  const urls =
+    post.images?.length > 0
+      ? post.images.map((i) => i.url)
+      : post.image
+        ? [post.image]
+        : []
 
   return (
     <article className="post-card">
@@ -48,6 +52,7 @@ export default function PostCard({ post, isOwner, onEdit, onDelete }) {
               <span className="post-card__sep">·</span>
               <Link to={`/groups/${group.slug}`} className="post-card__group">
                 {group.title || group.slug}
+                {group.is_private && <span className="badge-private">приватная</span>}
               </Link>
             </>
           )}
@@ -97,9 +102,15 @@ export default function PostCard({ post, isOwner, onEdit, onDelete }) {
       />
 
       <footer className="post-card__foot">
-        <Link to={`/posts/${post.id}`} className="post-card__comments-link">
-          💬 {commentsCount != null ? commentsCount : 'Комментарии'}
-        </Link>
+        <div className="post-card__reactions">
+          <LikeButton
+            post={post}
+            onChange={(state) => onLikeChange?.(post.id, state)}
+          />
+          <Link to={`/posts/${post.id}`} className="post-card__comments-link">
+            💬 {commentsCount != null ? commentsCount : 'Комментарии'}
+          </Link>
+        </div>
 
         {isOwner && (
           <div className="post-card__actions">

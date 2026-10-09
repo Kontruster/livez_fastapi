@@ -7,6 +7,14 @@ import PostCard from '../components/PostCard'
 import PostEditModal from '../components/PostEditModal'
 import ConfirmDialog from '../components/ConfirmDialog'
 
+function plural(n, one, few, many) {
+  const m10 = n % 10
+  const m100 = n % 100
+  if (m10 === 1 && m100 !== 11) return one
+  if (m10 >= 2 && m10 <= 4 && (m100 < 10 || m100 >= 20)) return few
+  return many
+}
+
 export default function ProfilePage() {
   const { username } = useParams()
   const { user } = useAuth()
@@ -49,15 +57,20 @@ export default function ProfilePage() {
     if (!profile) return
     setFollowBusy(true)
     const target = profile.author.username
+    const wasFollowing = profile.is_following
     try {
-      if (profile.is_following) {
+      if (wasFollowing) {
         await profileApi.unfollow(target)
         toast.success(`Вы отписались от ${target}`)
       } else {
         await profileApi.follow(target)
         toast.success(`Вы подписались на ${target}`)
       }
-      setProfile((p) => ({ ...p, is_following: !p.is_following }))
+      setProfile((p) => ({
+        ...p,
+        is_following: !wasFollowing,
+        followers_count: Math.max(0, (p.followers_count || 0) + (wasFollowing ? -1 : 1)),
+      }))
     } catch (err) {
       toast.error(err.message || 'Не удалось изменить подписку')
     } finally {
@@ -76,9 +89,7 @@ export default function ProfilePage() {
     try {
       await postsApi.remove(pendingDelete.id)
       setPosts((prev) => prev.filter((p) => p.id !== pendingDelete.id))
-      setProfile((p) =>
-        p ? { ...p, total_posts: Math.max(0, p.total_posts - 1) } : p,
-      )
+      setProfile((p) => (p ? { ...p, total_posts: Math.max(0, p.total_posts - 1) } : p))
       toast.success('Пост удалён')
       setPendingDelete(null)
     } catch (err) {
@@ -100,12 +111,7 @@ export default function ProfilePage() {
       <header className="profile__head">
         <div className="profile__avatar">
           {author.avatar_url ? (
-            <img
-              className="avatar-xs"
-              src={author.avatar_url}
-              alt=""
-              loading="lazy"
-            />
+            <img className="avatar-xs" src={author.avatar_url} alt="" loading="lazy" />
           ) : (
             <span className="avatar-xs">
               {(author.username || '?')[0].toUpperCase()}
@@ -116,12 +122,22 @@ export default function ProfilePage() {
         <div className="profile__info">
           <h1 className="profile__name">{author.username}</h1>
           <p className="profile__stats">
-            {profile.total_posts}{' '}
-            {profile.total_posts === 1
-              ? 'пост'
-              : profile.total_posts >= 2 && profile.total_posts <= 4
-                ? 'поста'
-                : 'постов'}
+            <span className="profile__stat">
+              <b>{profile.total_posts}</b>{' '}
+              {profile.total_posts === 1
+                ? 'пост'
+                : profile.total_posts >= 2 && profile.total_posts <= 4
+                  ? 'поста'
+                  : 'постов'}
+            </span>
+            <span className="profile__stat">
+              <b>{profile.followers_count ?? 0}</b>{' '}
+              {plural(profile.followers_count ?? 0, 'подписчик', 'подписчика', 'подписчиков')}
+            </span>
+            <span className="profile__stat">
+              <b>{profile.following_count ?? 0}</b>{' '}
+              {plural(profile.following_count ?? 0, 'подписка', 'подписки', 'подписок')}
+            </span>
           </p>
         </div>
 
@@ -132,11 +148,7 @@ export default function ProfilePage() {
             onClick={onFollowToggle}
             disabled={followBusy}
           >
-            {followBusy
-              ? '…'
-              : profile.is_following
-                ? 'Отписаться'
-                : 'Подписаться'}
+            {followBusy ? '…' : profile.is_following ? 'Отписаться' : 'Подписаться'}
           </button>
         )}
 

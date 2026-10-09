@@ -2,14 +2,19 @@ import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { postsApi } from '../api/client'
 import CommentList from '../components/CommentList'
+import LikeButton from '../components/LikeButton'
+import { addReply, countComments, removeComment } from '../utils/commentTree'
 
 function formatDate(iso) {
   if (!iso) return ''
   const d = new Date(iso)
   if (Number.isNaN(d.getTime())) return ''
   return d.toLocaleString('ru-RU', {
-    day: 'numeric', month: 'long', year: 'numeric',
-    hour: '2-digit', minute: '2-digit',
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
   })
 }
 
@@ -39,6 +44,28 @@ export default function PostDetailPage() {
     }
   }, [id])
 
+  const onCommentAdded = (created, parentId) => {
+    setComments((prev) => addReply(prev, parentId, created))
+    setPost((p) => (p ? { ...p, comments_count: (p.comments_count || 0) + 1 } : p))
+  }
+
+  const onCommentDeleted = (commentId) => {
+    // сначала считаем, сколько узлов уйдёт вместе с поддеревом
+    const removed = (function countRemoved(tree) {
+      for (const node of tree) {
+        if (node.id === commentId) return countComments([node])
+        const found = countRemoved(node.replies || [])
+        if (found) return found
+      }
+      return 0
+    })(comments)
+
+    setComments((prev) => removeComment(prev, commentId))
+    setPost((p) =>
+      p ? { ...p, comments_count: Math.max(0, (p.comments_count || 0) - removed) } : p,
+    )
+  }
+
   if (loading) return <p className="page-loading">Загружаем пост…</p>
   if (error) return <p className="form-error">{error}</p>
   if (!post) return null
@@ -65,6 +92,7 @@ export default function PostDetailPage() {
             <span className="post-card__sep">·</span>
             <Link to={`/groups/${group.slug}`} className="post-card__group">
               {group.title || group.slug}
+              {group.is_private && <span className="badge-private">приватная</span>}
             </Link>
           </>
         )}
@@ -88,10 +116,18 @@ export default function PostDetailPage() {
         <img className="post-detail__image" src={post.image} alt="" />
       ) : null}
 
+      <div className="post-detail__reactions">
+        <LikeButton
+          post={post}
+          onChange={(state) => setPost((p) => (p ? { ...p, ...state } : p))}
+        />
+      </div>
+
       <CommentList
         postId={post.id}
         comments={comments}
-        onAdded={(c) => setComments((prev) => [...prev, c])}
+        onAdded={onCommentAdded}
+        onDeleted={onCommentDeleted}
       />
     </article>
   )

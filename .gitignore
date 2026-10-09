@@ -1,5 +1,4 @@
-*.sqlite3
-# env
+# --- env ---
 .env
 .env.local
 .env.*.local
@@ -10,25 +9,49 @@ frontend/.env.local
 # но example-файлы коммитим!
 !**/.env.example
 
-# python
+# --- python ---
 __pycache__/
 *.py[cod]
+*$py.class
+venv/
 venv*/
 .venv/
-venv2/
 
-# node
+# --- тесты и линтеры ---
+.pytest_cache/
+.pytest-tmp/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+coverage.xml
+
+# --- БД ---
+*.sqlite3
+*.db
+backend/data/
+
+# --- node ---
 node_modules/
 dist/
+.vite/
+npm-debug.log*
+yarn-error.log*
 
-# uploads (не тащим мусор из разработки)
-backend/uploads/*
+# --- uploads (не тащим мусор из разработки) ---
+# ** покрывает и вложенные каталоги avatars/ и posts/
+backend/uploads/**
 !backend/uploads/.gitkeep
 
-# IDE
+# --- IDE ---
 .vscode/
 .idea/
+*.swp
 
-# OS
+# --- OS ---
 .DS_Store
 Thumbs.db
+desktop.ini
+
+# --- прочее ---
+*.log

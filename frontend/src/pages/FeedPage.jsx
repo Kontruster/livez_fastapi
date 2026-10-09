@@ -32,7 +32,10 @@ export default function FeedPage() {
   const [deleteBusy, setDeleteBusy] = useState(false)
 
   useEffect(() => {
-    groupsApi.list().then(setGroups).catch(() => {})
+    groupsApi
+      .list()
+      .then(setGroups)
+      .catch(() => {})
   }, [])
 
   useEffect(() => {
@@ -100,8 +103,7 @@ export default function FeedPage() {
   }
 
   const isOwner = (post) =>
-    !!user &&
-    (post.author?.id === user.id || post.author_id === user.id)
+    !!user && (post.author?.id === user.id || post.author_id === user.id)
 
   return (
     <div className="feed">

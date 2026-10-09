@@ -50,20 +50,22 @@ export default function GroupsPage() {
       {error && <p className="form-error">{error}</p>}
 
       {!loading && !error && groups.length === 0 && (
-        <p className="feed__empty">
-          Групп пока нет — создайте первую!
-        </p>
+        <p className="feed__empty">Групп пока нет — создайте первую!</p>
       )}
 
       <ul className="groups-grid">
         {groups.map((g) => (
-          <li key={g.id} className="group-card">
+          <li
+            key={g.id}
+            className={`group-card${g.is_private ? ' group-card--private' : ''}`}
+          >
             <Link to={`/groups/${g.slug}`} className="group-card__link">
-              <h2 className="group-card__title">{g.title}</h2>
+              <h2 className="group-card__title">
+                {g.title}
+                {g.is_private && <span className="badge-private">приватная</span>}
+              </h2>
               <p className="group-card__slug">@{g.slug}</p>
-              {g.description && (
-                <p className="group-card__desc">{g.description}</p>
-              )}
+              {g.description && <p className="group-card__desc">{g.description}</p>}
             </Link>
           </li>
         ))}

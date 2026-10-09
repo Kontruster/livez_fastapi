@@ -1,39 +1,43 @@
-import os
 import asyncio
 from logging.config import fileConfig
 
-from alembic import context
 from sqlalchemy import pool
 from sqlalchemy.ext.asyncio import async_engine_from_config
-from dotenv import load_dotenv
 
+from alembic import context
+
+# Импорт моделей обязателен: без него autogenerate не увидит таблицы.
+from app import models  # noqa: F401
+from app.config import settings
 from app.database import Base
-from app.models import User, Post, Group, Comment, Follow  # noqa: F401
-
-load_dotenv()
 
 config = context.config
 
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
-DATABASE_URL = os.getenv("DATABASE_URL")
-if DATABASE_URL:
-    config.set_main_option("sqlalchemy.url", DATABASE_URL)
+# Единый источник правды — app.config.settings (читает backend/.env).
+# DATABASE_URL можно переопределить переменной окружения для тестов/CI.
+config.set_main_option("sqlalchemy.url", settings.DATABASE_URL)
 
 target_metadata = Base.metadata
 
 
+def _include_object(object_, name, type_, reflected, compare_to):
+    """Не трогаем служебные таблицы вроде alembic_version."""
+    return not (type_ == "table" and name in {"alembic_version", "spatial_ref_sys"})
+
+
 def run_migrations_offline() -> None:
     """Генерация SQL-файлов без подключения к БД."""
-    url = config.get_main_option("sqlalchemy.url")
     context.configure(
-        url=url,
+        url=config.get_main_option("sqlalchemy.url"),
         target_metadata=target_metadata,
         literal_binds=True,
         dialect_opts={"paramstyle": "named"},
         compare_type=True,
         compare_server_default=True,
+        include_object=_include_object,
     )
     with context.begin_transaction():
         context.run_migrations()
@@ -45,6 +49,8 @@ def do_run_migrations(connection) -> None:
         target_metadata=target_metadata,
         compare_type=True,
         compare_server_default=True,
+        include_object=_include_object,
+        render_as_batch=connection.dialect.name == "sqlite",
     )
     with context.begin_transaction():
         context.run_migrations()

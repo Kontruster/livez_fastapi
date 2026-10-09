@@ -1,0 +1,11 @@
+-r requirements.txt
+
+# --- Тесты ---
+pytest==8.4.2
+pytest-asyncio==1.2.0
+aiosqlite==0.22.1
+httpx==0.28.1
+
+# --- Качество кода ---
+ruff==0.14.4
+mypy==1.18.2

@@ -4,10 +4,39 @@ import { groupsApi } from '../api/client'
 
 // Простая транслитерация для автозаполнения slug из title.
 const TRANSLIT = {
-  а:'a', б:'b', в:'v', г:'g', д:'d', е:'e', ё:'e', ж:'zh', з:'z',
-  и:'i', й:'y', к:'k', л:'l', м:'m', н:'n', о:'o', п:'p', р:'r',
-  с:'s', т:'t', у:'u', ф:'f', х:'h', ц:'c', ч:'ch', ш:'sh', щ:'sch',
-  ъ:'', ы:'y', ь:'', э:'e', ю:'yu', я:'ya',
+  а: 'a',
+  б: 'b',
+  в: 'v',
+  г: 'g',
+  д: 'd',
+  е: 'e',
+  ё: 'e',
+  ж: 'zh',
+  з: 'z',
+  и: 'i',
+  й: 'y',
+  к: 'k',
+  л: 'l',
+  м: 'm',
+  н: 'n',
+  о: 'o',
+  п: 'p',
+  р: 'r',
+  с: 's',
+  т: 't',
+  у: 'u',
+  ф: 'f',
+  х: 'h',
+  ц: 'c',
+  ч: 'ch',
+  ш: 'sh',
+  щ: 'sch',
+  ъ: '',
+  ы: 'y',
+  ь: '',
+  э: 'e',
+  ю: 'yu',
+  я: 'ya',
 }
 
 function slugify(input) {
@@ -26,6 +55,7 @@ export default function GroupCreateModal({ open, onClose, onCreated }) {
   const [slug, setSlug] = useState('')
   const [slugTouched, setSlugTouched] = useState(false)
   const [description, setDescription] = useState('')
+  const [isPrivate, setIsPrivate] = useState(false)
   const [error, setError] = useState('')
   const [busy, setBusy] = useState(false)
 
@@ -35,6 +65,7 @@ export default function GroupCreateModal({ open, onClose, onCreated }) {
       setSlug('')
       setSlugTouched(false)
       setDescription('')
+      setIsPrivate(false) 
       setError('')
     }
   }, [open])
@@ -53,6 +84,7 @@ export default function GroupCreateModal({ open, onClose, onCreated }) {
         title: title.trim(),
         slug: slug.trim(),
         description: description.trim(),
+        is_private: isPrivate,
       })
       onCreated(created)
       onClose()
@@ -70,12 +102,7 @@ export default function GroupCreateModal({ open, onClose, onCreated }) {
       onClose={busy ? () => {} : onClose}
       footer={
         <div className="modal__actions">
-          <button
-            type="button"
-            className="btn-ghost"
-            onClick={onClose}
-            disabled={busy}
-          >
+          <button type="button" className="btn-ghost" onClick={onClose} disabled={busy}>
             Отмена
           </button>
           <button
@@ -127,6 +154,18 @@ export default function GroupCreateModal({ open, onClose, onCreated }) {
             rows={3}
             placeholder="О чём эта группа?"
           />
+        </label>
+
+        <label className="form-field form-field--inline">
+          <input
+            type="checkbox"
+            checked={isPrivate}
+            onChange={(e) => setIsPrivate(e.target.checked)}
+          />
+          <span>
+            Приватная группа
+            <span className="form-hint">Посты видны только участникам</span>
+          </span>
         </label>
 
         {error && <p className="form-error">{error}</p>}

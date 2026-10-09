@@ -1,0 +1,52 @@
+[project]
+name = "livez-backend"
+version = "0.2.0"
+description = "LiveZ — мини-соцсеть на FastAPI"
+requires-python = ">=3.11"
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+exclude = ["venv", ".venv", "alembic/versions", "__pycache__"]
+
+[tool.ruff.lint]
+select = [
+    "E",    # pycodestyle errors
+    "W",    # pycodestyle warnings
+    "F",    # pyflakes
+    "I",    # isort
+    "B",    # flake8-bugbear
+    "C4",   # flake8-comprehensions
+    "UP",   # pyupgrade
+    "SIM",  # flake8-simplify
+    "RUF",  # ruff-specific
+]
+ignore = [
+    "B008",   # Depends() в значениях по умолчанию — норма для FastAPI
+    "E501",   # длину строк контролирует форматтер
+    "RUF001", # кириллица в строках: сообщения на русском, это не опечатка
+    "RUF002", # то же в docstring
+    "RUF003", # то же в комментариях
+]
+
+[tool.ruff.lint.per-file-ignores]
+# В conftest.py переменные окружения выставляются до импорта app.*,
+# поэтому импорты там идут после кода.
+"tests/*" = ["E402"]
+
+[tool.ruff.format]
+quote-style = "double"
+
+[tool.mypy]
+python_version = "3.11"
+plugins = ["pydantic.mypy"]
+ignore_missing_imports = true
+warn_unused_ignores = true
+warn_redundant_casts = true
+no_implicit_optional = true
+check_untyped_defs = true
+exclude = ["venv", "\\.venv", "alembic/versions"]
+
+[[tool.mypy.overrides]]
+module = ["fastapi_users.*", "fastapi_pagination.*", "alembic.*"]
+ignore_missing_imports = true

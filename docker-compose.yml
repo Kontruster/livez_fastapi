@@ -1,33 +1,38 @@
+# LiveZ — разработка. Горячая перезагрузка backend и frontend.
+#
+#   docker compose up --build
+#
+# Прод-конфигурация: docker-compose.prod.yml
 
 services:
   backend:
     build:
       context: ./backend
       dockerfile: Dockerfile
+      target: runtime
     container_name: fastapi_backend
     ports:
       - "${BACKEND_PORT:-8000}:8000"
     volumes:
-      # миграции, alembic revisions, uploads — всё синхронизировано
+      # код синхронизирован для --reload; uploads и data переживают перезапуск
       - ./backend:/app
-
-      - /app/__pycache__
-      - /app/app/__pycache__
-      - /app/app/routers/__pycache__
-      - /app/app/services/__pycache__
-      - /app/app/repositories/__pycache__
-      - /app/app/core/__pycache__
-      - /app/app/utils/__pycache__
-      - /app/alembic/__pycache__
-      - /app/alembic/versions/__pycache__
-
+      - backend_uploads:/app/uploads
+      - backend_data:/app/data
+      # виртуальные окружения с хоста внутрь контейнера не нужны
       - /app/venv
-      - /app/venv2
       - /app/.venv
+      - /app/.pytest_cache
+      - /app/.ruff_cache
+      - /app/.mypy_cache
+      - /app/__pycache__
     environment:
       DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
     env_file:
       - ./backend/.env
+    # в dev команда переопределяется: нужен --reload и без миграций при старте
+    command: >
+      sh -c "alembic upgrade head &&
+             uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload"
     depends_on:
       db:
         condition: service_healthy
@@ -50,11 +55,12 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
-      
+
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+      target: development
     container_name: react_frontend
     ports:
       - "${FRONTEND_PORT:-5173}:5173"
@@ -62,9 +68,14 @@ services:
       - ./frontend:/app
       - /app/node_modules
       - /app/dist
+    environment:
+      DOCKER: "true"
+      VITE_BACKEND_URL: http://backend:8000
     depends_on:
       - backend
     restart: unless-stopped
 
 volumes:
   postgres_data:
+  backend_uploads:
+  backend_data:

@@ -2,16 +2,10 @@ import { useEffect, useState } from 'react'
 import { postsApi } from '../api/client'
 import ImageUploader from './ImageUploader'
 
-export default function PostForm({
-  groups = [],
-  fixedGroupId,
-  onCreated,
-}) {
+export default function PostForm({ groups = [], fixedGroupId, onCreated }) {
   const [text, setText] = useState('')
-  const [images, setImages] = useState([]);
-  const [groupId, setGroupId] = useState(
-    fixedGroupId ? String(fixedGroupId) : '',
-  )
+  const [images, setImages] = useState([])
+  const [groupId, setGroupId] = useState(fixedGroupId ? String(fixedGroupId) : '')
   const [error, setError] = useState('')
   const [busy, setBusy] = useState(false)
 
@@ -47,9 +41,7 @@ export default function PostForm({
     <form className="post-form" onSubmit={onSubmit}>
       <textarea
         className="post-form__text"
-        placeholder={
-          fixedGroupId ? 'Написать в эту группу…' : 'О чём думаешь?'
-        }
+        placeholder={fixedGroupId ? 'Написать в эту группу…' : 'О чём думаешь?'}
         value={text}
         onChange={(e) => setText(e.target.value)}
         rows={3}
@@ -80,11 +72,7 @@ export default function PostForm({
           </select>
         )}
 
-        <button
-          type="submit"
-          className="btn-primary"
-          disabled={busy || !text.trim()}
-        >
+        <button type="submit" className="btn-primary" disabled={busy || !text.trim()}>
           {busy ? 'Публикуем…' : 'Опубликовать'}
         </button>
       </div>
