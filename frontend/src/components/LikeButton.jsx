@@ -49,7 +49,9 @@ export default function LikeButton({ post, onChange, showCount = true }) {
     <button
       type="button"
       className={
-        'like-button' + (liked ? ' like-button--active' : '') + (busy ? ' like-button--busy' : '')
+        'like-button' +
+        (liked ? ' like-button--active' : '') +
+        (busy ? ' like-button--busy' : '')
       }
       onClick={toggle}
       disabled={!user || busy}

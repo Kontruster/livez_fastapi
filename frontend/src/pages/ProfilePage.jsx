@@ -69,7 +69,10 @@ export default function ProfilePage() {
       setProfile((p) => ({
         ...p,
         is_following: !wasFollowing,
-        followers_count: Math.max(0, (p.followers_count || 0) + (wasFollowing ? -1 : 1)),
+        followers_count: Math.max(
+          0,
+          (p.followers_count || 0) + (wasFollowing ? -1 : 1),
+        ),
       }))
     } catch (err) {
       toast.error(err.message || 'Не удалось изменить подписку')
@@ -132,7 +135,12 @@ export default function ProfilePage() {
             </span>
             <span className="profile__stat">
               <b>{profile.followers_count ?? 0}</b>{' '}
-              {plural(profile.followers_count ?? 0, 'подписчик', 'подписчика', 'подписчиков')}
+              {plural(
+                profile.followers_count ?? 0,
+                'подписчик',
+                'подписчика',
+                'подписчиков',
+              )}
             </span>
             <span className="profile__stat">
               <b>{profile.following_count ?? 0}</b>{' '}

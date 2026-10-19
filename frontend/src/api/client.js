@@ -134,7 +134,8 @@ export const groupsApi = {
   create: (payload) => request('/groups/', { method: 'POST', body: payload }),
 
   // Членство в группе (нужно для приватных групп)
-  join: (slug) => request(`/groups/${encodeURIComponent(slug)}/join/`, { method: 'POST' }),
+  join: (slug) =>
+    request(`/groups/${encodeURIComponent(slug)}/join/`, { method: 'POST' }),
   leave: (slug) =>
     request(`/groups/${encodeURIComponent(slug)}/leave/`, { method: 'DELETE' }),
 }

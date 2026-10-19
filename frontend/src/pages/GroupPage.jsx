@@ -81,7 +81,9 @@ export default function GroupPage() {
   if (loading) {
     return (
       <div className="group-page">
-        <Link to="/groups" className="profile__hint">← Ко всем группам</Link>
+        <Link to="/groups" className="profile__hint">
+          ← Ко всем группам
+        </Link>
         <p className="page-loading">Загружаем…</p>
       </div>
     )
@@ -90,7 +92,9 @@ export default function GroupPage() {
   if (error) {
     return (
       <div className="group-page">
-        <Link to="/groups" className="profile__hint">← Ко всем группам</Link>
+        <Link to="/groups" className="profile__hint">
+          ← Ко всем группам
+        </Link>
         <p className="form-error">{error}</p>
       </div>
     )
@@ -110,25 +114,31 @@ export default function GroupPage() {
           onClick={onMembershipToggle}
           disabled={membershipBusy || !user}
         >
-          {membershipBusy ? '…' : user ? 'Вступить в группу' : 'Войдите, чтобы вступить'}
+          {membershipBusy
+            ? '…'
+            : user
+              ? 'Вступить в группу'
+              : 'Войдите, чтобы вступить'}
         </button>
-        <Link to="/groups" className="profile__hint">← Ко всем группам</Link>
+        <Link to="/groups" className="profile__hint">
+          ← Ко всем группам
+        </Link>
       </div>
     )
   }
 
   return (
     <div className="group-page">
-      <Link to="/groups" className="profile__hint">← Ко всем группам</Link>
+      <Link to="/groups" className="profile__hint">
+        ← Ко всем группам
+      </Link>
 
       <header className="group-page__head">
         <h1 className="page-title">
           {group?.title || `@${slug}`}
           {group?.is_private && <span className="badge-private">приватная</span>}
         </h1>
-        {group?.description && (
-          <p className="group-page__desc">{group.description}</p>
-        )}
+        {group?.description && <p className="group-page__desc">{group.description}</p>}
 
         {group && (
           <div className="group-page__meta">
@@ -183,14 +193,20 @@ export default function GroupPage() {
             className="btn-ghost"
             onClick={() => setPage((p) => Math.max(1, p - 1))}
             disabled={page <= 1}
-          >← Назад</button>
-          <span className="pagination__info">{page} из {pages}</span>
+          >
+            ← Назад
+          </button>
+          <span className="pagination__info">
+            {page} из {pages}
+          </span>
           <button
             type="button"
             className="btn-ghost"
             onClick={() => setPage((p) => Math.min(pages, p + 1))}
             disabled={page >= pages}
-          >Вперёд →</button>
+          >
+            Вперёд →
+          </button>
         </div>
       )}
     </div>

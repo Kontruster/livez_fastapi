@@ -65,7 +65,7 @@ export default function GroupCreateModal({ open, onClose, onCreated }) {
       setSlug('')
       setSlugTouched(false)
       setDescription('')
-      setIsPrivate(false) 
+      setIsPrivate(false)
       setError('')
     }
   }, [open])
