@@ -33,7 +33,6 @@ async def update_profile(
 
     new_username = form.username
     if new_username.lower() == current_user.username.lower():
-        # меняем только регистр, если он отличается
         if new_username != current_user.username:
             current_user.username = new_username
             await session.flush()

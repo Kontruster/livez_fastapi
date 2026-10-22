@@ -23,8 +23,6 @@ class User(SQLAlchemyBaseUserTable[int], Base):
     __tablename__ = "users"
 
     id = Column(Integer, primary_key=True, index=True)
-    # Уникальность ника выражена unique-индексом (без отдельного UniqueConstraint),
-    # иначе autogenerate видит «лишний» констрейнт.
     username = Column(String(50), nullable=False, unique=True, index=True)
     avatar_url = mapped_column(String, nullable=True)
 

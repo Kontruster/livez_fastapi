@@ -87,8 +87,6 @@ class PostService:
             page = await self.post_repo.get_group_posts(group.id, params=params)
             posts = await serialize_post_page(self.session, page, viewer_id=viewer_id)
         else:
-            # Метаданные группы показываем (чтобы можно было вступить),
-            # но содержимое не раскрываем.
             size = params.size if params else 10
             page_num = params.page if params else 1
             posts = Page(items=[], total=0, page=page_num, size=size, pages=0)

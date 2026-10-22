@@ -17,11 +17,13 @@ FRONTEND_DIR := frontend
 
 # Путь к python внутри venv (Windows и Unix)
 ifeq ($(OS),Windows_NT)
-  VENV_PY := $(BACKEND_DIR)/venv/Scripts/python.exe
-  VENV_PIP := $(BACKEND_DIR)/venv/Scripts/pip.exe
+  PYTHON   := python
+  VENV_PY  := $(BACKEND_DIR)/venv/Scripts/python.exe
+  VENV_PIP := $(VENV_PY) -m pip
 else
-  VENV_PY := $(BACKEND_DIR)/venv/bin/python
-  VENV_PIP := $(BACKEND_DIR)/venv/bin/pip
+  PYTHON   := python3
+  VENV_PY  := $(BACKEND_DIR)/venv/bin/python
+  VENV_PIP := $(VENV_PY) -m pip
 endif
 
 .PHONY: help
@@ -33,7 +35,7 @@ help: ## Показать список команд
 
 .PHONY: venv
 venv: ## Создать виртуальное окружение backend
-	python -m venv $(BACKEND_DIR)/venv
+	$(PYTHON) -m venv $(BACKEND_DIR)/venv
 
 .PHONY: install
 install: venv ## Поставить зависимости backend (включая dev)

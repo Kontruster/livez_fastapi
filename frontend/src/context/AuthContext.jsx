@@ -30,7 +30,6 @@ export function AuthProvider({ children }) {
   }, [])
 
   const register = useCallback(async (payload) => {
-    // после регистрации fastapi-users не логинит автоматически
     return authApi.register(payload)
   }, [])
 

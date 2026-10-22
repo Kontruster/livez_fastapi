@@ -2,10 +2,6 @@ import { useEffect, useState } from 'react'
 import { postsApi } from '../api/client'
 import { useAuth } from '../context/AuthContext'
 
-/**
- * Кнопка лайка. Работает оптимистично: интерфейс меняется сразу,
- * а при ошибке состояние откатывается к предыдущему.
- */
 export default function LikeButton({ post, onChange, showCount = true }) {
   const { user } = useAuth()
   const [liked, setLiked] = useState(!!post.is_liked)

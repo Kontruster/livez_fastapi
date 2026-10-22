@@ -65,7 +65,6 @@ class PostRepository:
         return await paginate(self.session, stmt, params=params)
 
     async def get_group_posts(self, group_id: int, params: Params | None = None) -> Page:
-        # Доступ уже проверен в сервисе, поэтому фильтр приватности здесь не нужен.
         stmt = (
             select(Post)
             .where(Post.group_id == group_id)
@@ -194,8 +193,6 @@ class PostRepository:
         for img in old:
             await self.session.delete(img)
 
-        # сначала удаляем старые позиции, потом вставляем новые,
-        # чтобы не нарушить уникальность (post_id, position)
         await self.session.flush()
 
         for i, url in enumerate(new_urls):
